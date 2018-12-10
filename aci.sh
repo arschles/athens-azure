@@ -2,7 +2,7 @@
 
 set -eou pipefail
 
-for LOCATION in "eastus2" "westeurope" "southeastasia"
+for LOCATION in "westus2" "eastus2" "westeurope" "southeastasia"
 do
     echo "Deploying in ${LOCATION}"
     az container create \
