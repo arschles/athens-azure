@@ -16,13 +16,13 @@ CENSUSAI_IMAGE ?= "arschles/censusai-forwarder:${CENSUSAI_IMAGE_TAG}"
 
 
 censusai-build-docker:
-	docker build -t ${CENSUSAI_IMAGE} ./censusai
+	docker build -t ${CENSUSAI_IMAGE} ./census
 
 censusai-local-docker:
 	docker run \
 		-d -p 55678:55678 \
 		-e APPINSIGHTS_INSTRUMENTATIONKEY=${APPINSIGHTS_INSTRUMENTATIONKEY} \
 		${CENSUSAI_IMAGE} \
-		./censusai
+		./census
 
 
