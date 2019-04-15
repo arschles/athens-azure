@@ -4,7 +4,7 @@ name: default
 
 steps:
 - name: Build Opencensus Sidecar
-  image: buildpack-deps:jessie-curl
+  image: plugins/docker
   commands:
     - make censusai-build-docker
     - makecensusai-push-docker
