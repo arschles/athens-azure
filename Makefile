@@ -17,9 +17,6 @@ CENSUSAI_IMAGE ?= arschles/censusai-forwarder:${CENSUSAI_IMAGE_TAG}
 censusai-build-docker:
 	docker build -t ${CENSUSAI_IMAGE} ./census
 
-censusai-login-docker:
-	docker login -u ${CENSUSAI_DOCKER_USERNAME} -p ${CENSUSAI_DOCKER_PASSWORD}
-
 censusai-push-docker:
 	docker push ${CENSUSAI_IMAGE}
 
