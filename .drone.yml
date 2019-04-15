@@ -1,0 +1,10 @@
+---
+kind: pipeline
+name: default
+
+steps:
+- name: Build Opencensus Sidecar
+  image: buildpack-deps:jessie-curl
+  commands:
+    - make censusai-build-docker
+    - makecensusai-push-docker
