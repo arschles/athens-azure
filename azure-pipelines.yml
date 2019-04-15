@@ -12,7 +12,7 @@ pool:
 steps:
 - script: |
     make censusai-build-docker
-  displayName: "Build & Push OpenCensus Sidecar"
+  displayName: "Build OpenCensus Sidecar"
   env:
     CENSUSAI_IMAGE: quay.io/arschles/censusai-forwarder:$(Build.SourceVersion)
 - task: PublishPipelineArtifact@0
