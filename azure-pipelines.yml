@@ -12,16 +12,10 @@ pool:
 steps:
 - script: |
     make censusai-build-docker
-    docker login quay.io -u ${CENSUSAI_DOCKER_USERNAME} -p ${CENSUSAI_DOCKER_PASSWORD}
-    make censusai-push-docker
   displayName: "Build & Push OpenCensus Sidecar"
   env:
     CENSUSAI_IMAGE: quay.io/arschles/censusai-forwarder:$(Build.SourceVersion)
-    CENSUSAI_DOCKER_USERNAME: $(censusaiDockerUsername)
-    CENSUSAI_DOCKER_PASSWORD: $(censusaiDockerPassword)
-    
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: PublishPipelineArtifact@0
+  inputs:
+    artifactName: censusDockerfile
+    targetPath: census/Dockerfile
