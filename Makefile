@@ -11,8 +11,8 @@ deploy:
 	AZURE_ATHENS_DNS_NAME=${AZURE_ATHENS_DNS_NAME} \
 	./aci.sh
 
-CENSUSAI_IMAGE_TAG ?= "canary"
-CENSUSAI_IMAGE ?= "arschles/censusai-forwarder:${CENSUSAI_IMAGE_TAG}"
+CENSUSAI_IMAGE_TAG ?= canary
+CENSUSAI_IMAGE ?= arschles/censusai-forwarder:${CENSUSAI_IMAGE_TAG}
 
 
 censusai-build-docker:
