@@ -4,10 +4,12 @@ name: default
 
 steps:
 - name: Build Opencensus Sidecar
-  image: plugins/docker
+  image: drone-docker
   commands:
+    - apt-get update
+    - apt-get install make
     - make censusai-build-docker
-    - makecensusai-push-docker
+    - make censusai-push-docker
   when:
     branch:
       - master
