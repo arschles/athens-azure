@@ -3,27 +3,13 @@ kind: pipeline
 name: default
 
 steps:
-- name: Build Opencensus Sidecar
-  image: plugins/docker
+- image: ubuntu:14.04
+  name: Hello World!
   commands:
-    - apt-get update
-    - apt-get install make
-    - make censusai-build-docker
-    - make censusai-push-docker
+    - echo Hello World
   when:
     branch:
       - master
     event:
       - push
       - pull_request
-- name: Helm Lint
-  image: lachlanevenson/k8s-helm:v2.13.1
-  commands:
-    - helm lint ./chart
-  when:
-    branch:
-      - master
-    event:
-      - push
-      - pull_request
-
