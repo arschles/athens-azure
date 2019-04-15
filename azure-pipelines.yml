@@ -16,9 +16,10 @@ steps:
     make censusai-push-docker
   displayName: "Build & Push OpenCensus Sidecar"
   env:
-    CENSUSAI_IMAGE_TAG: $(Build.SourceVersion)
+    CENSUSAI_IMAGE: quay.io/arschles/censusai-forwarder:$(Build.SourceVersion)
     CENSUSAI_DOCKER_USERNAME: $(censusaiDockerUsername)
     CENSUSAI_DOCKER_PASSWORD: $(censusaiDockerPassword)
+    
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
