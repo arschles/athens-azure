@@ -10,8 +10,9 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: |
+    make censusai-build-docker
+  displayName: "Build & Push OpenCensus Sidecar"
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
