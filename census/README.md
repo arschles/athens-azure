@@ -1,4 +1,4 @@
-# Open Census with Azure App Insights ##
+# Open Census with Azure App Insights 
 
 >This code was copied and adapted from [github.com/bketelsen/censusai](https://github.com/bketelsen/censusai) with permission. Thanks so much to [bketelsen](https://github.com/bketelsen) for this work!
 
