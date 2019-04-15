@@ -1,2 +1,1 @@
-# athens-azure
-Resources for deploying Athens on Azure
+# Deploying Athens on Azure
