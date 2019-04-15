@@ -8,7 +8,20 @@ steps:
   commands:
     - make censusai-build-docker
     - makecensusai-push-docker
+  when:
+    branch:
+      - master
+    event:
+      - push
+      - pull_request
 - name: Helm Lint
   image: lachlanevenson/k8s-helm:v2.13.1
   commands:
     - helm lint ./chart
+  when:
+    branch:
+      - master
+    event:
+      - push
+      - pull_request
+
