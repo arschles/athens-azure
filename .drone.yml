@@ -13,7 +13,6 @@ steps:
   - go build -o /usr/local/bin/flanders ./cmd/flanders
   environment:
     GOPROXY: https://athens.azurefd.net
-    PATH: "/usr/local/bin:${PATH}"
   volumes:
   - name: localbin
     path: /usr/local/bin
@@ -23,10 +22,9 @@ steps:
   commands:
   - flanders censusai build
   - "docker login quay.io -u ${QUAY_ROBOT_USERNAME} -p ${QUAY_ROBOT_PASSWORD}"
-  - flanders censusai push
+  - /usr/local/bin/flanders censusai push
   environment:
     CENSUSAI_IMAGE: quay.io/arschles/censusai-forwarder
-    PATH: "/usr/local/bin:${PATH}"
     QUAY_ROBOT_PASSWORD:
       from_secret: quay_robot_password
     QUAY_ROBOT_USERNAME:
