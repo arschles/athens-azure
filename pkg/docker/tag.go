@@ -3,6 +3,7 @@ package docker
 import (
 	"fmt"
 	"os/exec"
+	"strings"
 
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ func Tag(image string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	tag := string(out)
+	tag := strings.TrimRight(string(out), "\n")
 	return image + ":" + tag, nil
 }
 
