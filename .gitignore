@@ -12,6 +12,5 @@
 *.out
 .envrc
 resource.db
-helmer
 flanders
 !flanders/
