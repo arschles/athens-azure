@@ -12,9 +12,9 @@ type Set struct {
 }
 
 func Install(chartName, name, ns string, sets []Set) error {
-	args := []string{"install", chartName, fmt.Sprintf("-n %s", ns)}
+	args := []string{"install", chartName, "--name", name, "--namespace", ns}
 	for _, set := range sets {
-		args = append(args, fmt.Sprintf(`--set "%s=%s"`, set.Name, set.Val))
+		args = append(args, "--set", fmt.Sprintf(`"%s=%s"`, set.Name, set.Val))
 	}
 	return sh.Run("helm", args...)
 }
