@@ -8,8 +8,8 @@ steps:
   commands:
   - go build -o /usr/local/bin/flanders ./cmd/flanders
   environment:
-    GOPROXY: https://athens.azurefd.net
-    PATH: /usr/local/bin:${PATH}
+    GOPROXY: "https://athens.azurefd.net"
+    PATH: "/usr/local/bin:${PATH}"
   volumes:
   - name: localbin
     path: /usr/local/bin
@@ -20,7 +20,7 @@ steps:
   - docker login quay.io -u ${QUAY_ROBOT_USERNAME} -p ${QUAY_ROBOT_PASSWORD}
   - flanders censusai push
   environment:
-    PATH: /usr/local/bin:${PATH}
+    PATH: "/usr/local/bin:${PATH}"
     CENSUSAI_IMAGE: "quay.io/arschles/censusai-forwarder"
     QUAY_ROBOT_USERNAME:
       from_secret: quay_robot_username
