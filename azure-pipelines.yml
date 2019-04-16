@@ -17,5 +17,5 @@ steps:
     CENSUSAI_IMAGE: quay.io/arschles/censusai-forwarder:$(Build.SourceVersion)
 - task: PublishPipelineArtifact@0
   inputs:
-    artifactName: censusDockerfile
-    targetPath: census/Dockerfile
+    artifactName: census
+    targetPath: census
