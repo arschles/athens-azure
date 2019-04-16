@@ -3,13 +3,7 @@ kind: pipeline
 name: default
 
 steps:
-- image: ubuntu:14.04
-  name: Hello World!
+- name: Build Flanders
+  image: golang:1.12
   commands:
-    - echo Hello World
-  when:
-    branch:
-      - master
-    event:
-      - push
-      - pull_request
+  - go build -o flanders ./cmd/flanders
