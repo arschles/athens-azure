@@ -27,4 +27,5 @@ censusai-local-docker:
 		${CENSUSAI_IMAGE} \
 		./census
 
-
+build-helmer:
+	go build -o helmer ./cmd/helmer
