@@ -18,10 +18,9 @@ steps:
 - name: Build and Push The CensusAI Sidecar
   image: golang:1.12
   commands:
-  - alias flanders="/usr/local/bin/flanders"
-  - flanders censusai build
+  - /usr/local/bin/flanders censusai build
   - "docker login quay.io -u ${QUAY_ROBOT_USERNAME} -p ${QUAY_ROBOT_PASSWORD}"
-  - flanders censusai push
+  - /usr/local/bin/flanders censusai push
   environment:
     CENSUSAI_IMAGE: quay.io/arschles/censusai-forwarder
     QUAY_ROBOT_PASSWORD:
