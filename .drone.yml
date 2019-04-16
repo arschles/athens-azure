@@ -12,7 +12,14 @@ steps:
   image: golang:1.12
   commands:
   - flanders censusai build
+  - docker login quay.io -u ${QUAY_ROBOT_USERNAME} -p ${QUAY_ROBOT_PASSWORD}
   - flanders censusai push
+  environment:
+    CENSUSAI_IMAGE: "quay.io/arschles/censusai-forwarder"
+    QUAY_ROBOT_USERNAME:
+      from_secret: quay_robot_username
+    QUAY_ROBOT_PASSWORD:
+      from_secret: quay_robot_password
   when:
     branch:
     - master
