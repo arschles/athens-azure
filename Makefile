@@ -11,21 +11,8 @@ deploy:
 	AZURE_ATHENS_DNS_NAME=${AZURE_ATHENS_DNS_NAME} \
 	./aci.sh
 
-CENSUSAI_IMAGE_TAG ?= canary
-CENSUSAI_IMAGE ?= arschles/censusai-forwarder:${CENSUSAI_IMAGE_TAG}
+build-flanders:
+	go build -o flanders ./cmd/flanders
 
-censusai-build-docker:
-	docker build -t ${CENSUSAI_IMAGE} ./census
-
-censusai-push-docker:
-	docker push ${CENSUSAI_IMAGE}
-
-censusai-local-docker:
-	docker run \
-		-d -p 55678:55678 \
-		-e APPINSIGHTS_INSTRUMENTATIONKEY=${APPINSIGHTS_INSTRUMENTATIONKEY} \
-		${CENSUSAI_IMAGE} \
-		./census
-
-build-helmer:
-	go build -o helmer ./cmd/helmer
+install-flanders:
+	go install ./cmd/flanders
