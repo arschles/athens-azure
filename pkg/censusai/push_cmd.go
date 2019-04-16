@@ -1,10 +1,12 @@
 package censusai
 
 import (
+	"fmt"
+
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/arschles/athens-azure/pkg/docker"
 	"github.com/arschles/athens-azure/pkg/env"
-	"github.com/magefile/mage/sh"
+	"github.com/arschles/athens-azure/pkg/run"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +21,12 @@ func pushCmd() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		return sh.RunV("docker", "push", img)
+		res, err := run.Command("docker", "push", img)
+		if err != nil {
+			return err
+		}
+		fmt.Println(res)
+		return nil
 	}
 	return cmd
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/arschles/athens-azure/pkg/docker"
 	"github.com/arschles/athens-azure/pkg/env"
-	"github.com/magefile/mage/sh"
+	"github.com/arschles/athens-azure/pkg/run"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +22,12 @@ func buildCmd() *cobra.Command {
 			return err
 		}
 		fmt.Println("Building", img)
-		return sh.RunV("docker", "build", "-t", img, "./census")
+		res, err := run.Command("docker", "build", "-t", img, "./census")
+		if err != nil {
+			return err
+		}
+		fmt.Println(res)
+		return nil
 	}
 	return cmd
 }
