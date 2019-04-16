@@ -7,3 +7,11 @@ steps:
   image: golang:1.12
   commands:
   - go build -o flanders ./cmd/flanders
+  - go install -o flanders ./cmd/flanders
+- name: Build and Push The CensusAI Sidecar
+  commands:
+  - flanders censusai build
+  - flanders censusai push
+  when:
+    branch:
+    - master
