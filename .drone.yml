@@ -11,8 +11,6 @@ steps:
   image: golang:1.12
   commands:
   - go build -o /usr/local/bin/flanders ./cmd/flanders
-  environment:
-    GOPROXY: https://athens.azurefd.net
   volumes:
   - name: localbin
     path: /usr/local/bin
