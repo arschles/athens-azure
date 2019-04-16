@@ -6,8 +6,13 @@ steps:
 - name: Build Flanders
   image: golang:1.12
   commands:
-  - go build -o flanders ./cmd/flanders
-  - go install ./cmd/flanders
+  - go build -o /usr/local/bin/flanders ./cmd/flanders
+  environment:
+    GOPROXY: https://athens.azurefd.net
+    PATH: /usr/local/bin:${PATH}
+  volumes:
+  - name: localbin
+    path: /usr/local/bin
 - name: Build and Push The CensusAI Sidecar
   image: golang:1.12
   commands:
@@ -15,6 +20,7 @@ steps:
   - docker login quay.io -u ${QUAY_ROBOT_USERNAME} -p ${QUAY_ROBOT_PASSWORD}
   - flanders censusai push
   environment:
+    PATH: /usr/local/bin:${PATH}
     CENSUSAI_IMAGE: "quay.io/arschles/censusai-forwarder"
     QUAY_ROBOT_USERNAME:
       from_secret: quay_robot_username
@@ -23,6 +29,9 @@ steps:
   when:
     branch:
     - master
+  volumes:
+    - name: localbin
+      path: /usr/local/bin
 - name: Helm Lint The Athens Chart
   image: lachlanevenson/k8s-helm
   commands:
