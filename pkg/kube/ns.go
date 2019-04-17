@@ -2,6 +2,7 @@ package kube
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/ericchiang/k8s"
 	corev1 "github.com/ericchiang/k8s/apis/core/v1"
@@ -23,7 +24,9 @@ func newNamespace(name string) *namespace {
 func (n *namespace) Install(ctx context.Context, cl *k8s.Client) error {
 	err := cl.Create(ctx, n.core)
 	if apiErr := errToAPIErr(err); apiErr != nil {
-		if apiErr.Code != 201 {
+		// 201 CREATED or 409 CONFLICT means it's already there
+		if apiErr.Code != http.StatusCreated ||
+			apiErr.Code != http.StatusConflict {
 			return apiErr
 		}
 		return nil
