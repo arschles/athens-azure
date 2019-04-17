@@ -3,11 +3,8 @@ package ingress
 import (
 	"context"
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/arschles/athens-azure/pkg/cmd"
-	"github.com/arschles/athens-azure/pkg/env"
 	"github.com/arschles/athens-azure/pkg/kube"
 	v1 "github.com/ericchiang/k8s/apis/core/v1"
 	"github.com/spf13/cobra"
@@ -16,11 +13,7 @@ import (
 func pubIPCmd(ctx context.Context) *cobra.Command {
 	ret := cmd.Skeleton("pubip", "Get the public IP of the ingress controller")
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
-		kubeCfg, err := env.Check("KUBECONFIG")
-		if err != nil {
-			home := os.Getenv("HOME")
-			kubeCfg = filepath.Join(home, ".kube", "config")
-		}
+		kubeCfg := kube.DiskKubeConfigPath()
 		cl, err := kube.LoadClient(kubeCfg)
 		if err != nil {
 			return err
