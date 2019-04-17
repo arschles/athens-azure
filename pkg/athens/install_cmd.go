@@ -1,9 +1,6 @@
 package athens
 
 import (
-	"context"
-	"fmt"
-
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/arschles/athens-azure/pkg/env"
 	"github.com/arschles/athens-azure/pkg/kube"
@@ -13,7 +10,7 @@ import (
 
 const namespace = "athens"
 
-func installCmd(ctx context.Context) *cobra.Command {
+func installCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("install", "Install Athens")
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
 
@@ -28,14 +25,14 @@ func installCmd(ctx context.Context) *cobra.Command {
 		if err := kube.UpsertNamespace(ctx, cl, namespace); err != nil {
 			return errors.WithStack(err)
 		}
-		fmt.Println("Created namespace", namespace)
-		fmt.Println("Creating service")
+		ctx.Debugf("Created namespace %s", namespace)
+		ctx.Debugf("Creating service")
 		// service := athensService(port)
 		// if err := service.Install(ctx, cl); err != nil {
 		// 	return err
 		// }
 
-		fmt.Println("Deploying", img)
+		ctx.Debugf("Deploying %s", img)
 		// deployment := athensDeployment(img)
 		// if err := deployment.Install(ctx, cl); err != nil {
 		// 	return err
@@ -44,14 +41,14 @@ func installCmd(ctx context.Context) *cobra.Command {
 		// return helm.Install("./charts/athens", "athens", "athens", []helm.Set{
 		// 	{Name: "goGetWorkers", Val: "2"},
 		// })
-		fmt.Println("Deployment created")
+		ctx.Debugf("Deployment created")
 
-		fmt.Println("Creating ingress")
+		ctx.Debugf("Creating ingress")
 		// ingress :=  athensIngress(svc)
 		// if err := ingress.Install(ctx, cl); err != nil {
 		// 	return err
 		// }
-		fmt.Println("Ingress created")
+		ctx.Debugf("Ingress created")
 		return nil
 	}
 	return ret

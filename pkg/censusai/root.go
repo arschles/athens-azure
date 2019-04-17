@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Root() *cobra.Command {
+func Root(ctx cmd.Context) *cobra.Command {
 	cmd := cmd.Skeleton(
 		"censusai",
 		"Tools to build the OpenCensus Sidecar for Application Insights",

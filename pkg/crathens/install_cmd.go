@@ -1,7 +1,6 @@
 package crathens
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/arschles/athens-azure/pkg/env"
@@ -13,7 +12,7 @@ import (
 
 const imgEnvVar = "CRATHENS_IMAGE"
 
-func installCmd(ctx context.Context, debug bool) *cobra.Command {
+func installCmd(ctx cmd.Context, debug bool) *cobra.Command {
 	ret := cmd.Skeleton("install", "Install Crathens")
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
 		img, err := env.CheckOrArg(imgEnvVar, args, 0)
@@ -35,9 +34,7 @@ func installCmd(ctx context.Context, debug bool) *cobra.Command {
 			kube.ContainerList{jobContainer},
 		)
 
-		if debug {
-			fmt.Println("job:\n", job)
-		}
+		ctx.Debugf("job:\n%s", job)
 
 		if err := job.Install(ctx, cl); err != nil {
 			return err

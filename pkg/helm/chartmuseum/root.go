@@ -10,7 +10,7 @@ import (
 const accountVarName = "AZURE_STORAGE_ACCOUNT"
 const accessKeyVarName = "AZURE_STORAGE_ACCESS_KEY"
 
-func Root() *cobra.Command {
+func Root(ctx cmd.Context) *cobra.Command {
 	cmd := cmd.Skeleton("chartmuseum", "do stuff with chartmuseum")
 	cmd.AddCommand(installCmd())
 	return cmd

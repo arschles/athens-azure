@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Root() *cobra.Command {
+func Root(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("docker", "Utilities for docker images")
 	ret.AddCommand(tagCmd())
 	return ret

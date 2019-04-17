@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/arschles/athens-azure/pkg/athens"
 	"github.com/arschles/athens-azure/pkg/censusai"
 	"github.com/arschles/athens-azure/pkg/cmd"
@@ -16,12 +18,17 @@ import (
 // It only needs to be called once and then run by the main function
 func Root() *cobra.Command {
 	root := cmd.Skeleton("flanders", "Do container-ey and Kubernetes-ey things with less fuss")
+	var debug bool
+	flags := root.PersistentFlags()
+	flags.BoolVarP(&debug, "debug", "d", false, "Turn on debug logging")
+	c := context.Background()
+	ctx := cmd.NewContext(c, debug)
 
-	root.AddCommand(chartmuseum.Root())
-	root.AddCommand(censusai.Root())
-	root.AddCommand(docker.Root())
-	root.AddCommand(ingress.Root())
-	root.AddCommand(athens.Root())
-	root.AddCommand(crathens.Root())
+	root.AddCommand(chartmuseum.Root(ctx))
+	root.AddCommand(censusai.Root(ctx))
+	root.AddCommand(docker.Root(ctx))
+	root.AddCommand(ingress.Root(ctx))
+	root.AddCommand(athens.Root(ctx))
+	root.AddCommand(crathens.Root(ctx))
 	return root
 }
