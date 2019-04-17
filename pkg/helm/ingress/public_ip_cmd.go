@@ -13,8 +13,7 @@ import (
 func pubIPCmd(ctx context.Context) *cobra.Command {
 	ret := cmd.Skeleton("pubip", "Get the public IP of the ingress controller")
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
-		kubeCfg := kube.DiskKubeConfigPath()
-		cl, err := kube.LoadClient(kubeCfg)
+		cl, err := kube.LoadClientFromDiskKubeConfig()
 		if err != nil {
 			return err
 		}

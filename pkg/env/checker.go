@@ -26,3 +26,16 @@ func CheckOr(key string, fn Defaulter) (string, error) {
 	}
 	return ret, nil
 }
+
+func CheckOrArg(key string, lst []string, idx int) (string, error) {
+	return CheckOr(key, func(key string) (string, error) {
+		if idx+1 > len(lst) {
+			return "", fmt.Errorf(
+				"no %s env var set, and argument %d was missing",
+				key,
+				idx+1,
+			)
+		}
+		return lst[idx], nil
+	})
+}

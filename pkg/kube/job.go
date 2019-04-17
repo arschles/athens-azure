@@ -1,7 +1,10 @@
 package kube
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/ericchiang/k8s"
 	batchv1 "github.com/ericchiang/k8s/apis/batch/v1"
@@ -9,11 +12,13 @@ import (
 
 type Job struct {
 	core *batchv1.Job
+	fmt.Stringer
 	Installer
+	Namer
 }
 
 func NewJob(name, ns string, containers ContainerList) *Job {
-	return &Job{
+	ret := &Job{
 		core: &batchv1.Job{
 			Metadata: objectMeta(name, ns),
 			Spec: &batchv1.JobSpec{
@@ -21,8 +26,26 @@ func NewJob(name, ns string, containers ContainerList) *Job {
 			},
 		},
 	}
+	ret.core.Spec.Template.Spec.RestartPolicy = k8s.String("OnFailure")
+	return ret
 }
 
 func (j *Job) Install(ctx context.Context, cl *k8s.Client) error {
 	return cl.Create(ctx, j.core)
+}
+
+func (j *Job) Name() string {
+	return *j.core.Metadata.Name
+}
+
+func (j *Job) String() string {
+	b, err := json.Marshal(j.core)
+	if err != nil {
+		return fmt.Sprintf("error marshaling Job %s", j.Name())
+	}
+	var buf bytes.Buffer
+	if err := json.Indent(&buf, b, "", "    "); err != nil {
+		return fmt.Sprintf("error indenting JSON for job %s", j.Name())
+	}
+	return string(buf.Bytes())
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/ericchiang/k8s"
 	corev1 "github.com/ericchiang/k8s/apis/core/v1"
+	"github.com/pkg/errors"
 )
 
 type namespace struct {
@@ -14,9 +15,11 @@ type namespace struct {
 }
 
 func newNamespace(name string) *namespace {
+	meta := objectMeta(name, name)
+	meta.Namespace = nil // namespaces aren't namespaced
 	return &namespace{
 		core: &corev1.Namespace{
-			Metadata: objectMeta(name, name),
+			Metadata: meta,
 		},
 	}
 }
@@ -24,14 +27,14 @@ func newNamespace(name string) *namespace {
 func (n *namespace) Install(ctx context.Context, cl *k8s.Client) error {
 	err := cl.Create(ctx, n.core)
 	if apiErr := errToAPIErr(err); apiErr != nil {
-		// 201 CREATED or 409 CONFLICT means it's already there
-		if apiErr.Code != http.StatusCreated ||
+		// 201 CREATED and 409 CONFLICT means it's already there
+		if apiErr.Code != http.StatusCreated &&
 			apiErr.Code != http.StatusConflict {
-			return apiErr
+			return errors.WithStack(apiErr)
 		}
 		return nil
 	}
-	return err
+	return errors.WithStack(err)
 }
 
 func UpsertNamespace(ctx context.Context, cl *k8s.Client, name string) error {

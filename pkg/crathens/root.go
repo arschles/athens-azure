@@ -11,7 +11,8 @@ const namespace = "crathens"
 
 func Root() *cobra.Command {
 	ctx := context.Background()
+	debug := false
 	ret := cmd.Skeleton("crathens", "Install, update, and administrate Crathens")
-	ret.AddCommand(installCmd(ctx))
+	ret.AddCommand(installCmd(ctx, debug))
 	return ret
 }

@@ -26,3 +26,7 @@ func LoadClient(configPath string) (*k8s.Client, error) {
 	}
 	return k8s.NewClient(&config)
 }
+
+func LoadClientFromDiskKubeConfig() (*k8s.Client, error) {
+	return LoadClient(DiskKubeConfigPath())
+}
