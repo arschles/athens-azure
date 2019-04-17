@@ -73,3 +73,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+goGetWorkers: 3
+censusAI:
+  enabled: false

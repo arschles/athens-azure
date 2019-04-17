@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/arschles/athens-azure/pkg/athens"
 	"github.com/arschles/athens-azure/pkg/censusai"
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/arschles/athens-azure/pkg/docker"
@@ -19,5 +20,6 @@ func Root() *cobra.Command {
 	root.AddCommand(censusai.Root())
 	root.AddCommand(docker.Root())
 	root.AddCommand(ingress.Root())
+	root.AddCommand(athens.Root())
 	return root
 }
