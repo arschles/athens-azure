@@ -8,5 +8,6 @@ import (
 func Root(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("athens", "Install, update, and administrate Athens")
 	ret.AddCommand(installCmd(ctx))
+	ret.AddCommand(upgradeCmd(ctx))
 	return ret
 }

@@ -53,10 +53,3 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 	}
 	return ret
 }
-
-func athensDeployment(img string) *kube.Deployment {
-	containerList := kube.ContainerList{
-		kube.NewContainer("athens", img),
-	}
-	return kube.NewDeployment("athens", namespace, containerList)
-}

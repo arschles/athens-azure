@@ -12,6 +12,7 @@ import (
 type Deployment struct {
 	core *appsv1.Deployment
 	Installer
+	Updater
 }
 
 func NewDeployment(name, ns string, containers ContainerList) *Deployment {
@@ -41,4 +42,8 @@ func (d *Deployment) SetImage(containerNum int, img string) error {
 
 func (d *Deployment) Install(ctx context.Context, cl *k8s.Client) error {
 	return cl.Create(ctx, d.core)
+}
+
+func (d *Deployment) Update(ctx context.Context, cl *k8s.Client) error {
+	return cl.Update(ctx, d.core)
 }
