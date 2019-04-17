@@ -4,6 +4,7 @@ import (
 	"github.com/arschles/athens-azure/pkg/athens"
 	"github.com/arschles/athens-azure/pkg/censusai"
 	"github.com/arschles/athens-azure/pkg/cmd"
+	"github.com/arschles/athens-azure/pkg/crathens"
 	"github.com/arschles/athens-azure/pkg/docker"
 	"github.com/arschles/athens-azure/pkg/helm/chartmuseum"
 	"github.com/arschles/athens-azure/pkg/helm/ingress"
@@ -21,5 +22,6 @@ func Root() *cobra.Command {
 	root.AddCommand(docker.Root())
 	root.AddCommand(ingress.Root())
 	root.AddCommand(athens.Root())
+	root.AddCommand(crathens.Root())
 	return root
 }
