@@ -3,9 +3,6 @@
 ## User Configurable
 
 ```hcl
-// optional, defaults to a moniker-generated name
-app = "myapp"
-
 web {
     // optional, defaults to 3
     Replicas = 123
@@ -28,6 +25,9 @@ job {
     Image = "quay.io/arschles/crathens:canary"
 }
 ```
+
+Flanders will write a `.flanders.hcl` file which contains the name of the app.
+The user should only set it on install.
 
 ## Internal
 
