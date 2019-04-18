@@ -10,10 +10,14 @@ type Installer interface {
 	Install(context.Context, *k8s.Client) error
 }
 
+// Namer gets the current in-memory name of the resource
+//
+// This might be different from the name of the resource in the cluster
 type Namer interface {
 	Name() string
 }
 
+// Typer gets the current in-memory type of the resource
 type Typer interface {
 	Type() string
 }
