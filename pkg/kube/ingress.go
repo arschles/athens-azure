@@ -19,13 +19,6 @@ type Ingress struct {
 	// a method in Resource when you put it into a profile
 }
 
-// IngressFromCore creates a new ingress from a core ingress value
-func IngressFromCore(ing *extv1beta1.Ingress) *Ingress {
-	return &Ingress{
-		core: ing,
-	}
-}
-
 // NewIngress creates a new ingress from some values with sensible defaults
 //
 // TODO: this is a mess, clean it up by factoring out some struct
