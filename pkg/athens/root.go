@@ -18,7 +18,7 @@ func Root(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("athens", "Install, update, and administrate Athens")
 	ret.AddCommand(installCmd(ctx))
 	ret.AddCommand(uninstallCmd(ctx))
-	ret.AddCommand(upgradeCmd(ctx))
+	ret.AddCommand(updateCmd(ctx))
 	ret.AddCommand(currentCmd(ctx))
 	return ret
 }
