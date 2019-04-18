@@ -52,6 +52,10 @@ func (j *Job) GetImage(idx int) (string, error) {
 	return con.GetImage(), nil
 }
 
+func (j *Job) Delete(ctx context.Context, cl *k8s.Client) error {
+	return cl.Delete(ctx, j.core)
+}
+
 func (j *Job) String() string {
 	b, err := json.Marshal(j.core)
 	if err != nil {

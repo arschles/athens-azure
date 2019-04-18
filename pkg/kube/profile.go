@@ -3,6 +3,7 @@ package kube
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/ericchiang/k8s"
 	"github.com/souz9/errlist"
@@ -21,6 +22,7 @@ import (
 // and uninstalled in reverse-order
 type Profile struct {
 	resources []Resource
+	fmt.Stringer
 }
 
 func NewLongRunningBatchProfile(j *Job) *Profile {
@@ -34,6 +36,27 @@ func NewWebServerProfile(name, ns string, containers ContainerList) *Profile {
 	return &Profile{
 		resources: []Resource{depl},
 	}
+}
+
+// Setup prepares Kubernetes to install the profile. This is doing things
+// like creating namespaces, etc...
+func (p *Profile) Setup(
+	ctx context.Context,
+	cl *k8s.Client,
+	strat ErrorStrategy,
+) error {
+	errs := []error{}
+	for _, res := range p.resources {
+		ns := res.Namespace()
+		if err := ns.Install(ctx, cl); err != nil {
+			// TODO: strategy
+			errs = append(errs, err)
+		}
+	}
+	if len(errs) > 0 {
+		return errlist.Error(errs)
+	}
+	return nil
 }
 
 func (p *Profile) Install(
@@ -81,6 +104,19 @@ func (p *Profile) Update(
 	return nil
 }
 
+func (p *Profile) String() string {
+	strs := make([]string, len(p.resources))
+	for i, res := range p.resources {
+		strs[i] = fmt.Sprintf(
+			"%s %s %s",
+			res.Type(),
+			res.Namespace().Name(),
+			res.Name(),
+		)
+	}
+	return strings.Join(strs, "\n")
+}
+
 // func (c *Crudder) Read(ctx context.Context) error {
 // 	return c.Resource.Get(ctx, c.Client)
 // }
@@ -94,6 +130,9 @@ type Resource interface {
 	Deleter
 	ReadyWatcher
 	DeletedWatcher
+	Namespacer
+	Namer
+	Typer
 }
 
 type ErrorStrategy string
@@ -101,7 +140,7 @@ type ErrorStrategy string
 const (
 	ErrorStrategyStop     ErrorStrategy = "stop"
 	ErrorStrategyRollback ErrorStrategy = "rollback"
-	ErrorStrategyIgnore   ErrorStrategy = "ignore"
+	ErrorStrategyContinue ErrorStrategy = "continue"
 )
 
 func chWait(ctx context.Context, ch <-chan error) error {

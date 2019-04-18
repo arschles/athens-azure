@@ -9,22 +9,34 @@ import (
 	"github.com/pkg/errors"
 )
 
-type namespace struct {
+type Namespace struct {
 	Installer
+	ReadyWatcher
+	DeletedWatcher
+	Namer
+	Typer
 	core *corev1.Namespace
 }
 
-func newNamespace(name string) *namespace {
+func NewNamespace(name string) *Namespace {
 	meta := objectMeta(name, name)
 	meta.Namespace = nil // namespaces aren't namespaced
-	return &namespace{
+	return &Namespace{
 		core: &corev1.Namespace{
 			Metadata: meta,
 		},
 	}
 }
 
-func (n *namespace) Install(ctx context.Context, cl *k8s.Client) error {
+func (n *Namespace) Name() string {
+	return *n.core.Metadata.Name
+}
+
+func (n *Namespace) Type() string {
+	return "Namespace"
+}
+
+func (n *Namespace) Install(ctx context.Context, cl *k8s.Client) error {
 	err := cl.Create(ctx, n.core)
 	if apiErr := errToAPIErr(err); apiErr != nil {
 		// 201 CREATED and 409 CONFLICT means it's already there
@@ -37,7 +49,14 @@ func (n *namespace) Install(ctx context.Context, cl *k8s.Client) error {
 	return errors.WithStack(err)
 }
 
-func UpsertNamespace(ctx context.Context, cl *k8s.Client, name string) error {
-	ns := newNamespace(name)
-	return ns.Install(ctx, cl)
+func (n *Namespace) ReadyCh() <-chan error {
+	ret := make(chan error)
+	close(ret)
+	return ret
+}
+
+func (n *Namespace) DeletedCh() <-chan error {
+	ret := make(chan error)
+	close(ret)
+	return ret
 }

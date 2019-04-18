@@ -14,6 +14,10 @@ type Namer interface {
 	Name() string
 }
 
+type Typer interface {
+	Type() string
+}
+
 type Getter interface {
 	Get(context.Context, *k8s.Client, string, string) error
 }
@@ -25,11 +29,14 @@ type Updater interface {
 type Deleter interface {
 	Delete(context.Context, *k8s.Client) error
 }
-
 type ReadyWatcher interface {
 	ReadyCh(context.Context, *k8s.Client) <-chan error
 }
 
 type DeletedWatcher interface {
 	DeletedCh(context.Context, *k8s.Client) <-chan error
+}
+
+type Namespacer interface {
+	Namespace() *Namespace
 }

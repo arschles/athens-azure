@@ -1,8 +1,6 @@
 package crathens
 
 import (
-	"fmt"
-
 	"github.com/arschles/athens-azure/pkg/env"
 	"github.com/arschles/athens-azure/pkg/kube"
 
@@ -23,19 +21,23 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 		if err != nil {
 			return err
 		}
-		if err := kube.UpsertNamespace(ctx, cl, namespace); err != nil {
-			return err
-		}
 
 		jobContainer := kube.NewContainer("crathens", img)
 		job := crathensJob(kube.ContainerList{jobContainer})
-
-		ctx.Debugf("job:\n%s", job)
-
-		if err := job.Install(ctx, cl); err != nil {
+		jobProfile := kube.NewLongRunningBatchProfile(job)
+		ctx.Infof("Setting up and installing profile %s", jobProfile)
+		if err := jobProfile.Setup(
+			ctx,
+			cl,
+			kube.ErrorStrategyContinue,
+		); err != nil {
 			return err
 		}
-		fmt.Println("crathens", img, "created")
+		if err := jobProfile.Install(ctx); err != nil {
+			return err
+		}
+
+		ctx.Infof("Done")
 		return nil
 	}
 	return ret
