@@ -18,6 +18,7 @@ type Deployment struct {
 	fmt.Stringer
 }
 
+// NewDeployment creates a new deployment with sensible defaults
 func NewDeployment(name, ns string, containers ContainerList) *Deployment {
 	return &Deployment{
 		core: &appsv1.Deployment{
