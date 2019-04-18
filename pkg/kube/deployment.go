@@ -38,6 +38,16 @@ func (d *Deployment) GetImage(idx int) (string, error) {
 	return con.GetImage(), nil
 }
 
+// Type is the Typer implementation
+func (d *Deployment) Type() string {
+	return "Deployment"
+}
+
+// Name is the Namer implementation
+func (d *Deployment) Name() string {
+	return *d.core.Metadata.Name
+}
+
 // setReplicas _copies_ d, updates spec.replicas to num on the copy, and
 // returns the copy with the updated value
 //
