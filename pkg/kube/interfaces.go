@@ -37,6 +37,9 @@ type Typer interface {
 	Type() string
 }
 
+// Getter gets the resource from the cluster and writes it into the
+// local in-memory copy. It takes a name and a namespace (in that order)
+// for the in-cluster resource
 type Getter interface {
 	Get(context.Context, *k8s.Client, string, string) error
 }

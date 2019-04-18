@@ -15,15 +15,12 @@ func currentCmd(ctx cmd.Context) *cobra.Command {
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		depl := athensDeployment("null")
-		if err := depl.Get(ctx, cl, name, namespace); err != nil {
-			return errors.WithStack(err)
+		prof := newProfile("")
+		if err := prof.Status(ctx, cl); err != nil {
+			ctx.Infof("Error! %s", err)
+			return err
 		}
-		img, err := depl.GetImage(0)
-		if err != nil {
-			return errors.WithStack(err)
-		}
-		ctx.Infof(img)
+		ctx.Infof("All is good :)")
 		return nil
 	}
 	return ret

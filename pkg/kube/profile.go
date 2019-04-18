@@ -31,6 +31,11 @@ type Profile interface {
 	Install(context.Context, *k8s.Client, ErrorStrategy) error
 	// Uninstall calls Delete on all resources in the profile, in reverse order
 	Uninstall(context.Context, *k8s.Client, ErrorStrategy) error
+	// Status checks all the resources inside the profile and returns nil
+	// if everything is installed properly.
+	//
+	// Otherwise, returns an error(s) indicating what's wrong
+	Status(context.Context, *k8s.Client) error
 }
 
 type profile struct {
@@ -140,6 +145,19 @@ func (p *profile) String() string {
 
 func (p *profile) AllResources() []Resource {
 	return p.resources
+}
+
+func (p *profile) Status(ctx context.Context, cl *k8s.Client) error {
+	errs := []error{}
+	for _, res := range p.resources {
+		if err := res.Get(ctx, cl, res.Name(), res.Namespace().Name()); err != nil {
+			errs = append(errs, err)
+		}
+	}
+	if len(errs) > 0 {
+		return errlist.Error(errs)
+	}
+	return nil
 }
 
 // SetupAndInstallProfile calls pr.Setup and then pr.Install according to
