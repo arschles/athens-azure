@@ -53,11 +53,19 @@ func (j *Job) Delete(ctx context.Context, cl *k8s.Client) error {
 	return cl.Delete(ctx, j.core)
 }
 
+func (j *Job) Namespace() *Namespace {
+	return NewNamespace(*j.core.Metadata.Namespace)
+}
+
 func (j *Job) DeletedCh(context.Context, *k8s.Client) <-chan error {
 	// TODO
 	ch := make(chan error)
 	close(ch)
 	return ch
+}
+
+func (j *Job) Type() string {
+	return "Job"
 }
 
 func (j *Job) ReadyCh(context.Context, *k8s.Client) <-chan error {

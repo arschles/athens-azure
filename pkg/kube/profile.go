@@ -114,7 +114,7 @@ func (p *Profile) String() string {
 	strs := make([]string, len(p.resources))
 	for i, res := range p.resources {
 		strs[i] = fmt.Sprintf(
-			"%s %s %s",
+			"%s: %s/%s",
 			res.Type(),
 			res.Namespace().Name(),
 			res.Name(),
