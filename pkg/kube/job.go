@@ -53,6 +53,7 @@ func (j *Job) Delete(ctx context.Context, cl *k8s.Client) error {
 	return cl.Delete(ctx, j.core)
 }
 
+// Namespace is the implementation of Namespacer
 func (j *Job) Namespace() *Namespace {
 	return NewNamespace(*j.core.Metadata.Namespace)
 }
