@@ -103,5 +103,5 @@ func (s *Service) Update(ctx context.Context, cl *k8s.Client) error {
 }
 
 func (s *Service) String() string {
-	return stringer.ToJSON(*s, s.Type())
+	return stringer.ToJSON(s.core, s.Type())
 }

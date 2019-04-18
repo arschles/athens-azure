@@ -91,5 +91,5 @@ func (j *Job) ReadyCh(context.Context, *k8s.Client) <-chan error {
 
 // String implements Stringer
 func (j *Job) String() string {
-	return stringer.ToJSON(*j, j.Type())
+	return stringer.ToJSON(j.core, j.Type())
 }

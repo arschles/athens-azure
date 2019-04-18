@@ -110,5 +110,5 @@ func (i *Ingress) Update(ctx context.Context, cl *k8s.Client) error {
 }
 
 func (i *Ingress) String() string {
-	return stringer.ToJSON(i, i.Type())
+	return stringer.ToJSON(i.core, i.Type())
 }
