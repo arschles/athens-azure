@@ -11,9 +11,7 @@ import (
 // Deployment is a convenience wrapper around a k8s deployment object
 type Deployment struct {
 	core *appsv1.Deployment
-	Installer
-	Updater
-	Getter
+	Resource
 }
 
 func NewDeployment(name, ns string, containers ContainerList) *Deployment {

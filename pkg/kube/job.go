@@ -13,10 +13,7 @@ import (
 type Job struct {
 	core *batchv1.Job
 	fmt.Stringer
-	Installer
-	Namer
-	Getter
-	Updater
+	Resource
 }
 
 func NewJob(name, ns string, containers ContainerList) *Job {
@@ -54,6 +51,20 @@ func (j *Job) GetImage(idx int) (string, error) {
 
 func (j *Job) Delete(ctx context.Context, cl *k8s.Client) error {
 	return cl.Delete(ctx, j.core)
+}
+
+func (j *Job) DeletedCh(context.Context, *k8s.Client) <-chan error {
+	// TODO
+	ch := make(chan error)
+	close(ch)
+	return ch
+}
+
+func (j *Job) ReadyCh(context.Context, *k8s.Client) <-chan error {
+	// TODO
+	ch := make(chan error)
+	close(ch)
+	return ch
 }
 
 func (j *Job) String() string {

@@ -6,6 +6,21 @@ import (
 	"github.com/ericchiang/k8s"
 )
 
+// Resource is a single Kubernetes object that you can do standard CRUD
+// operations on
+type Resource interface {
+	Installer
+	Updater
+	Getter
+	Deleter
+	ReadyWatcher
+	DeletedWatcher
+	Namespacer
+	Namer
+	Typer
+}
+
+// Installer installs the current in-memory resource into the cluster
 type Installer interface {
 	Install(context.Context, *k8s.Client) error
 }

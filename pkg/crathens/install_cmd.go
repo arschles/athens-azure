@@ -25,15 +25,14 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 		jobContainer := kube.NewContainer("crathens", img)
 		job := crathensJob(kube.ContainerList{jobContainer})
 		jobProfile := kube.NewLongRunningBatchProfile(job)
+
 		ctx.Infof("Setting up and installing profile %s", jobProfile)
-		if err := jobProfile.Setup(
+		if err := kube.SetupAndInstallProfile(
 			ctx,
 			cl,
+			jobProfile,
 			kube.ErrorStrategyContinue,
 		); err != nil {
-			return err
-		}
-		if err := jobProfile.Install(ctx); err != nil {
 			return err
 		}
 

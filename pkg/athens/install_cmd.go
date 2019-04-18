@@ -20,17 +20,34 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		if err := kube.UpsertNamespace(ctx, cl, namespace); err != nil {
-			return errors.WithStack(err)
+
+		container := kube.NewContainer(name, img)
+		athensProfile := kube.NewWebServerProfile(
+			name,
+			namespace,
+			kube.ContainerList{container},
+		)
+		ctx.Infof("Setting up and installing %s", athensProfile)
+		if err := kube.SetupAndInstallProfile(
+			ctx,
+			cl,
+			athensProfile,
+			kube.ErrorStrategyContinue,
+		); err != nil {
+			return err
 		}
-		ctx.Debugf("Created namespace %s", namespace)
-		ctx.Debugf("Creating service")
+		ctx.Infof("Done")
+		// if err := kube.UpsertNamespace(ctx, cl, namespace); err != nil {
+		// 	return errors.WithStack(err)
+		// }
+		// ctx.Debugf("Created namespace %s", namespace)
+		// ctx.Debugf("Creating service")
 		// service := athensService(port)
 		// if err := service.Install(ctx, cl); err != nil {
 		// 	return err
 		// }
 
-		ctx.Debugf("Deploying %s", img)
+		// ctx.Debugf("Deploying %s", img)
 		// deployment := athensDeployment(img)
 		// if err := deployment.Install(ctx, cl); err != nil {
 		// 	return err
@@ -39,14 +56,14 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 		// return helm.Install("./charts/athens", "athens", "athens", []helm.Set{
 		// 	{Name: "goGetWorkers", Val: "2"},
 		// })
-		ctx.Debugf("Deployment created")
+		// ctx.Debugf("Deployment created")
 
-		ctx.Debugf("Creating ingress")
+		// ctx.Debugf("Creating ingress")
 		// ingress :=  athensIngress(svc)
 		// if err := ingress.Install(ctx, cl); err != nil {
 		// 	return err
 		// }
-		ctx.Debugf("Ingress created")
+		// ctx.Debugf("Ingress created")
 		return nil
 	}
 	return ret

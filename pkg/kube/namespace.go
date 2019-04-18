@@ -50,12 +50,14 @@ func (n *Namespace) Install(ctx context.Context, cl *k8s.Client) error {
 }
 
 func (n *Namespace) ReadyCh() <-chan error {
+	// TODO
 	ret := make(chan error)
 	close(ret)
 	return ret
 }
 
 func (n *Namespace) DeletedCh() <-chan error {
+	// TODO
 	ret := make(chan error)
 	close(ret)
 	return ret

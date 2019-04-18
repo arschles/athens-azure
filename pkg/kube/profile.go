@@ -117,22 +117,20 @@ func (p *Profile) String() string {
 	return strings.Join(strs, "\n")
 }
 
-// func (c *Crudder) Read(ctx context.Context) error {
-// 	return c.Resource.Get(ctx, c.Client)
-// }
-
-// Resource is a single Kubernetes object that you can do standard CRUD
-// operations on
-type Resource interface {
-	Installer
-	Updater
-	Getter
-	Deleter
-	ReadyWatcher
-	DeletedWatcher
-	Namespacer
-	Namer
-	Typer
+func SetupAndInstallProfile(
+	ctx context.Context,
+	cl *k8s.Client,
+	pr *Profile,
+	strat ErrorStrategy,
+) error {
+	// TODO: error strategy
+	if err := pr.Setup(ctx, cl, strat); err != nil {
+		return err
+	}
+	if err := pr.Install(ctx, cl, strat); err != nil {
+		return err
+	}
+	return nil
 }
 
 type ErrorStrategy string
