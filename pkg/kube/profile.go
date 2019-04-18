@@ -77,6 +77,30 @@ func (p *Profile) Install(
 	return nil
 }
 
+// Uninstall calls Delete on all resources in the profile, in reverse order
+func (p *Profile) Uninstall(
+	ctx context.Context,
+	cl *k8s.Client,
+	strat ErrorStrategy,
+) error {
+	errs := []error{}
+	for i := len(p.resources) - 1; i >= 0; i-- {
+		res := p.resources[i]
+		deletedCh := res.DeletedCh(ctx, cl)
+		if err := res.Delete(ctx, cl); err != nil {
+			// TODO: strategy
+			errs = append(errs, err)
+		}
+		if err := chWait(ctx, deletedCh); err != nil {
+			//TODO: strategy
+		}
+	}
+	if len(errs) > 0 {
+		return errlist.Error(errs)
+	}
+	return nil
+}
+
 func (p *Profile) Update(
 	ctx context.Context,
 	cl *k8s.Client,
