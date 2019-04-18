@@ -31,6 +31,8 @@ type Profile interface {
 	Install(context.Context, *k8s.Client, ErrorStrategy) error
 	// Uninstall calls Delete on all resources in the profile, in reverse order
 	Uninstall(context.Context, *k8s.Client, ErrorStrategy) error
+	// Update updates every resource in the profile
+	Update(context.Context, *k8s.Client, ErrorStrategy) error
 	// Status checks all the resources inside the profile and returns nil
 	// if everything is installed properly.
 	//
