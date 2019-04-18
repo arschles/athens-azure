@@ -24,13 +24,7 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 			return errors.WithStack(err)
 		}
 
-		athensProfile := kube.NewWebServerProfile(
-			name,
-			namespace,
-			"athens.azurefd.net",
-			3,
-			containerList(img),
-		)
+		athensProfile := newProfile(img)
 		if ctx.IsDebug() {
 			ctx.Debugf("Here are the resources that are going to be installed:")
 			resources := athensProfile.AllResources()
