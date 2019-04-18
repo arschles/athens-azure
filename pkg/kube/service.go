@@ -32,8 +32,15 @@ func NewService(
 	}
 }
 
-func (s *Service) setType(t string) {
-	s.core.Spec.Type = k8s.String(t)
+// setType _copies_ s, updates the type of the copied service, and
+// returns the copy
+//
+// Since this function doesn't copy in place, you'll need to update
+// your service to the return value of this function
+func (s *Service) setType(t string) *Service {
+	copy := *s
+	copy.core.Spec.Type = k8s.String(t)
+	return &copy
 }
 
 func ServiceFromCore(svc *corev1.Service) *Service {
