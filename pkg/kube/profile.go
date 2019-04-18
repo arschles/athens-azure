@@ -112,6 +112,12 @@ func (p *Profile) String() string {
 	return strings.Join(strs, "\n")
 }
 
+// AllResources returns all the Kubernetes resources in this profile, in the
+// order they're stored
+func (p *Profile) AllResources() []Resource {
+	return p.resources
+}
+
 // SetupAndInstallProfile calls pr.Setup and then pr.Install according to
 // strat
 func SetupAndInstallProfile(
