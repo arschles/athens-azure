@@ -2,6 +2,7 @@ package kube
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ericchiang/k8s"
 	"github.com/souz9/errlist"
@@ -42,10 +43,15 @@ func (p *Profile) Install(
 ) error {
 	errs := []error{}
 	for _, res := range p.resources {
+		readyCh := res.ReadyCh(ctx, cl)
 		if err := res.Install(ctx, cl); err != nil {
 			// TODO: strategy
 			errs = append(errs, err)
 		}
+		if err := chWait(ctx, readyCh); err != nil {
+			//TODO: strategy
+		}
+
 	}
 	if len(errs) > 0 {
 		return errlist.Error(errs)
@@ -60,9 +66,13 @@ func (p *Profile) Update(
 ) error {
 	errs := []error{}
 	for _, res := range p.resources {
+		readyCh := res.ReadyCh(ctx, cl)
 		if err := res.Update(ctx, cl); err != nil {
 			// TODO: strategy
 			errs = append(errs, err)
+		}
+		if err := chWait(ctx, readyCh); err != nil {
+			// TODO: strategy
 		}
 	}
 	if len(errs) > 0 {
@@ -81,6 +91,9 @@ type Resource interface {
 	Installer
 	Updater
 	Getter
+	Deleter
+	ReadyWatcher
+	DeletedWatcher
 }
 
 type ErrorStrategy string
@@ -90,3 +103,15 @@ const (
 	ErrorStrategyRollback ErrorStrategy = "rollback"
 	ErrorStrategyIgnore   ErrorStrategy = "ignore"
 )
+
+func chWait(ctx context.Context, ch <-chan error) error {
+	select {
+	case <-ctx.Done():
+		return fmt.Errorf("Timeout waiting for channel")
+	case err := <-ch:
+		if err != nil {
+			return fmt.Errorf("Error returned from wait channel (%s)", err)
+		}
+		return nil
+	}
+}
