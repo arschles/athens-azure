@@ -22,6 +22,14 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 		}
 
 		athensProfile := newProfile(img)
+		if ctx.IsDebug() {
+			ctx.Debugf("Here are the resources that are going to be installed:")
+			resources := athensProfile.AllResources()
+			for _, res := range resources {
+				ctx.Debugf("%s %s/%s", res.Type(), res.Namespace().Name(), res.Name())
+				ctx.Debugf("%s", res)
+			}
+		}
 		ctx.Infof("Setting up and installing %s", athensProfile)
 		if err := kube.SetupAndInstallProfile(
 			ctx,
