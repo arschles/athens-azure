@@ -25,7 +25,7 @@ func NewJob(name, ns string, containers ContainerList) *Job {
 		core: &batchv1.Job{
 			Metadata: objectMeta(name, ns),
 			Spec: &batchv1.JobSpec{
-				Template: podTemplateSpec(name, ns, containers),
+				Template: podTemplateSpec(emptyMap(), containers),
 			},
 		},
 	}

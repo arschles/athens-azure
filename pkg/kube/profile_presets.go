@@ -13,22 +13,32 @@ func NewLongRunningBatchProfile(j *Job) *Profile {
 // resources you need to launch or update a web server
 func NewWebServerProfile(
 	name,
-	ns string,
+	ns,
+	host string,
 	replicas int32,
 	containers ContainerList,
 ) *Profile {
+	res := []Resource{}
+
 	svcPorts := containers.toServicePorts()
 
-	depl := NewDeployment(name, ns, containers)
+	// set up the deployment
+	depl := NewDeployment(name, ns, map[string]string{
+		"app": name,
+	}, containers)
 
 	depl = depl.setReplicas(replicas)
-	depl = depl.setMatchLabels(map[string]string{
+	// depl = depl.setMatchLabels(map[string]string{
+	// 	"app": name,
+	// 	// "release": rel
+	// })
+
+	depl = depl.setTplMetadataLabels(map[string]string{
 		"app": name,
-		// "release": rel
 	})
+	res = append(res, depl)
 
-	depl.core.Spec.Template.Metadata.Labels["app"] = name
-
+	// set up the service
 	svc := NewService(
 		name,
 		ns,
@@ -42,8 +52,16 @@ func NewWebServerProfile(
 	if len(svcPorts) > 0 {
 		svc = svc.setType("ClusterIP")
 	}
+	res = append(res, svc)
 
-	// ing := NewIngress()
+	// set up the ingress only if there were ports exposed on the service
+	// only set up an ingres
+	if len(svcPorts) > 0 {
+		svcName := svc.Name()
+		svcPort := svcPorts[0]
+		ing := NewIngress(name, ns, host, "/", svcName, *svcPort)
+		res = append(res, ing)
+	}
 	return &Profile{
 		resources: []Resource{depl},
 	}

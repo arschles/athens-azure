@@ -14,7 +14,6 @@ import (
 // Deployment is a convenience wrapper around a k8s deployment object
 type Deployment struct {
 	core *appsv1.Deployment
-	Resource
 	fmt.Stringer
 	// Note: Deployments implement Resource, but don't embed it here
 	// because the compiler will not give errors if you don't implement
@@ -22,14 +21,20 @@ type Deployment struct {
 }
 
 // NewDeployment creates a new deployment with sensible defaults
-func NewDeployment(name, ns string, containers ContainerList) *Deployment {
+func NewDeployment(
+	name,
+	ns string,
+	selectorLabels map[string]string,
+	containers ContainerList,
+) *Deployment {
 	return &Deployment{
 		core: &appsv1.Deployment{
-			Metadata: objectMeta(name, ns),
+			Metadata: objectMetaWithLabels(name, ns, selectorLabels),
 			Spec: &appsv1.DeploymentSpec{
-				Template: podTemplateSpec(name, ns, containers),
+				Replicas: k8s.Int32(3),
+				Template: podTemplateSpec(selectorLabels, containers),
 				Selector: &metav1.LabelSelector{
-					MatchLabels: make(map[string]string),
+					MatchLabels: selectorLabels,
 				},
 			},
 		},
@@ -66,7 +71,7 @@ func (d *Deployment) setReplicas(num int32) *Deployment {
 	return &copy
 }
 
-// setReplicas _copies_ d, updates spec.selector.matchLabels to num
+// setMatchLabels _copies_ d, updates spec.selector.matchLabels to num
 // on the copy, and returns the copy
 //
 // Since this function doesn't copy in place, you'll need to update
@@ -74,6 +79,17 @@ func (d *Deployment) setReplicas(num int32) *Deployment {
 func (d *Deployment) setMatchLabels(m map[string]string) *Deployment {
 	copy := *d
 	copy.core.Spec.Selector.MatchLabels = m
+	return &copy
+}
+
+// setTplMetadataLabels _copies_ d, updates spec.template.metadata.labels to m
+// on the copy, and returns the copy
+//
+// Since this function doesn't copy in place, you'll need to update
+// your deployment to the return value of this function
+func (d *Deployment) setTplMetadataLabels(m map[string]string) *Deployment {
+	copy := *d
+	copy.core.Spec.Template.Metadata.Labels = m
 	return &copy
 }
 
