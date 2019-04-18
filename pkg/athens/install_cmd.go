@@ -39,7 +39,7 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 				ctx.Debugf("%s", res)
 			}
 		}
-		ctx.Infof("Setting up and installing %s", athensProfile)
+		ctx.Infof("Setting up and installing:\n%s", athensProfile)
 		if dryRun {
 			ctx.Infof("----> Not doing anything because this is a dry run")
 		} else {
