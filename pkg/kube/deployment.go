@@ -6,6 +6,7 @@ import (
 
 	"github.com/ericchiang/k8s"
 	appsv1 "github.com/ericchiang/k8s/apis/apps/v1"
+	metav1 "github.com/ericchiang/k8s/apis/meta/v1"
 )
 
 // Deployment is a convenience wrapper around a k8s deployment object
@@ -20,6 +21,9 @@ func NewDeployment(name, ns string, containers ContainerList) *Deployment {
 			Metadata: objectMeta(name, ns),
 			Spec: &appsv1.DeploymentSpec{
 				Template: podTemplateSpec(name, ns, containers),
+				Selector: &metav1.LabelSelector{
+					MatchLabels: make(map[string]string),
+				},
 			},
 		},
 	}

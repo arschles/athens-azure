@@ -22,7 +22,7 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 			return err
 		}
 
-		jobContainer := kube.NewContainer("crathens", img)
+		jobContainer := kube.NewContainer("crathens", img, 0)
 		job := crathensJob(kube.ContainerList{jobContainer})
 		jobProfile := kube.NewLongRunningBatchProfile(job)
 

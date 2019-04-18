@@ -14,6 +14,6 @@ func athensDeployment(img string) *kube.Deployment {
 
 func containerList(img string) kube.ContainerList {
 	return kube.ContainerList{
-		kube.NewContainer(name, img),
+		kube.NewContainer(name, img, 3000),
 	}
 }
