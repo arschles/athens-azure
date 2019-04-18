@@ -84,3 +84,24 @@ func (d *Deployment) Update(ctx context.Context, cl *k8s.Client) error {
 func (d *Deployment) Get(ctx context.Context, cl *k8s.Client, name, ns string) error {
 	return cl.Get(ctx, ns, name, d.core)
 }
+
+// ReadyCh is the ReadyWatcher implementation
+func (d *Deployment) ReadyCh(ctx context.Context, cl *k8s.Client) <-chan error {
+	// TODO
+	ret := make(chan error)
+	close(ret)
+	return ret
+}
+
+// DeletedCh is the DeletedWatcher implementation
+func (d *Deployment) DeletedCh(context.Context, *k8s.Client) <-chan error {
+	// TODO
+	ret := make(chan error)
+	close(ret)
+	return ret
+}
+
+// Namespace is the implementation of Namespacer
+func (d *Deployment) Namespace() *Namespace {
+	return NewNamespace(*d.core.Metadata.Namespace)
+}
