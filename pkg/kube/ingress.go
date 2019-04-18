@@ -12,6 +12,7 @@ type Ingress struct {
 	core *extv1beta1.Ingress
 }
 
+// IngressFromCore creates a new ingress from a core ingress value
 func IngressFromCore(ing *extv1beta1.Ingress) *Ingress {
 	return &Ingress{
 		core: ing,
