@@ -84,6 +84,11 @@ func (d *Deployment) Update(ctx context.Context, cl *k8s.Client) error {
 	return cl.Update(ctx, d.core)
 }
 
+// Delete implements Deleter
+func (d *Deployment) Delete(ctx context.Context, cl *k8s.Client) error {
+	return cl.Delete(ctx, d.core)
+}
+
 // Get is the implementation of Getter
 func (d *Deployment) Get(ctx context.Context, cl *k8s.Client, name, ns string) error {
 	return cl.Get(ctx, ns, name, d.core)
