@@ -1,11 +1,16 @@
 package kube
 
+// NewLongRunningBatchProfile creates a new profile that contains all the
+// kubernetes resources you need to launch or update a long running batch
+// job
 func NewLongRunningBatchProfile(j *Job) *Profile {
 	return &Profile{
 		resources: []Resource{j},
 	}
 }
 
+// NewWebServerProfile creates a new profile that contains all the kubernetes
+// resources you need to launch or update a web server
 func NewWebServerProfile(
 	name,
 	ns string,
