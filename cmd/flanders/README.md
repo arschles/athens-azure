@@ -4,6 +4,7 @@
 
 ```hcl
 web {
+    domain = "my.domain"
     // optional, defaults to 3
     Replicas = 123
     Name = "Athens"
