@@ -16,6 +16,7 @@ type Job struct {
 	Installer
 	Namer
 	Getter
+	Updater
 }
 
 func NewJob(name, ns string, containers ContainerList) *Job {
