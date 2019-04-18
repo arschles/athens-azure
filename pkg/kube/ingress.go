@@ -25,6 +25,46 @@ func IngressFromCore(ing *extv1beta1.Ingress) *Ingress {
 	}
 }
 
+// NewIngress creates a new ingress from some values with sensible defaults
+//
+// TODO: this is a mess, clean it up by factoring out some struct
+func NewIngress(
+	name,
+	ns,
+	host,
+	path,
+	svcName string,
+	svcPort corev1.ServicePort,
+) *Ingress {
+	rule := &extv1beta1.IngressRule{
+		Host: k8s.String(host),
+		IngressRuleValue: &extv1beta1.IngressRuleValue{
+			Http: &extv1beta1.HTTPIngressRuleValue{
+				Paths: []*extv1beta1.HTTPIngressPath{
+					&extv1beta1.HTTPIngressPath{
+						Path: k8s.String("/"),
+						Backend: &extv1beta1.IngressBackend{
+							ServiceName: k8s.String(svcName),
+							ServicePort: newIntOrString(*svcPort.Port),
+						},
+					},
+				},
+			},
+		},
+	}
+	return &Ingress{
+		core: &extv1beta1.Ingress{
+			Metadata: objectMeta(name, ns),
+			Spec: &extv1beta1.IngressSpec{
+				Rules: []*extv1beta1.IngressRule{
+					rule,
+				},
+			},
+		},
+	}
+}
+
+// Install implements Installer
 func (i *Ingress) Install(ctx context.Context, cl *k8s.Client) error {
 	return cl.Create(ctx, i.core)
 }
