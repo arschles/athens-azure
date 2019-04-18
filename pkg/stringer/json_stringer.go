@@ -16,7 +16,7 @@ func ToJSON(i interface{}, name string) string {
 	}
 	var buf bytes.Buffer
 	if err := json.Indent(&buf, b, "", "    "); err != nil {
-		return fmt.Sprintf("error indenting JSON for job %s", d.Name())
+		return fmt.Sprintf("error indenting JSON for job %s", name)
 	}
 	return string(buf.Bytes())
 }
