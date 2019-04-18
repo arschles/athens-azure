@@ -28,3 +28,49 @@ func IngressFromCore(ing *extv1beta1.Ingress) *Ingress {
 func (i *Ingress) Install(ctx context.Context, cl *k8s.Client) error {
 	return cl.Create(ctx, i.core)
 }
+
+// Delete implements Deleter
+func (i *Ingress) Delete(ctx context.Context, cl *k8s.Client) error {
+	return cl.Delete(ctx, i.core)
+}
+
+// DeletedCh implements DeletedWatcher
+func (i *Ingress) DeletedCh(ctx context.Context, cl *k8s.Client) <-chan error {
+	// TODO
+	ret := make(chan error)
+	close(ret)
+	return ret
+}
+
+// ReadyCh implements ReadyWatcher
+func (i *Ingress) ReadyCh(context.Context, *k8s.Client) <-chan error {
+	// TODO
+	ret := make(chan error)
+	close(ret)
+	return ret
+}
+
+// Get implemented Getter
+func (i *Ingress) Get(ctx context.Context, cl *k8s.Client, name, ns string) error {
+	return cl.Get(ctx, ns, name, i.core)
+}
+
+// Name implements Namer
+func (i *Ingress) Name() string {
+	return *i.core.Metadata.Name
+}
+
+// Namespace implements Namespacer
+func (i *Ingress) Namespace() *Namespace {
+	return NewNamespace(*i.core.Metadata.Namespace)
+}
+
+// Type implements Typer
+func (i *Ingress) Type() string {
+	return "Ingress"
+}
+
+// Update implements Updater
+func (i *Ingress) Update(ctx context.Context, cl *k8s.Client) error {
+	return cl.Update(ctx, i.core)
+}
