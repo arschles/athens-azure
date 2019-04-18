@@ -123,6 +123,8 @@ func (p *Profile) String() string {
 	return strings.Join(strs, "\n")
 }
 
+// SetupAndInstallProfile calls pr.Setup and then pr.Install according to
+// strat
 func SetupAndInstallProfile(
 	ctx context.Context,
 	cl *k8s.Client,
