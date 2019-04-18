@@ -1,11 +1,10 @@
 package kube
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 
+	"github.com/arschles/athens-azure/pkg/stringer"
 	"github.com/ericchiang/k8s"
 	appsv1 "github.com/ericchiang/k8s/apis/apps/v1"
 	metav1 "github.com/ericchiang/k8s/apis/meta/v1"
@@ -135,13 +134,5 @@ func (d *Deployment) Namespace() *Namespace {
 }
 
 func (d *Deployment) String() string {
-	b, err := json.Marshal(d.core)
-	if err != nil {
-		return fmt.Sprintf("error marshaling Deployment %s", d.Name())
-	}
-	var buf bytes.Buffer
-	if err := json.Indent(&buf, b, "", "    "); err != nil {
-		return fmt.Sprintf("error indenting JSON for job %s", d.Name())
-	}
-	return string(buf.Bytes())
+	return stringer.ToJSON(d, d.Type())
 }

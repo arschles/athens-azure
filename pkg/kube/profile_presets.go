@@ -63,6 +63,6 @@ func NewWebServerProfile(
 		res = append(res, ing)
 	}
 	return &profile{
-		resources: []Resource{depl},
+		resources: res,
 	}
 }

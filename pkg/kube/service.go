@@ -62,26 +62,31 @@ func (s *Service) Delete(ctx context.Context, cl *k8s.Client) error {
 	return cl.Delete(ctx, s.core)
 }
 
+// Name implements Namer
 func (s *Service) Name() string {
 	return *s.core.Metadata.Name
 }
 
+// Namespace implements Namespacer
 func (s *Service) Namespace() *Namespace {
 	return NewNamespace(*s.core.Metadata.Namespace)
 }
 
+// DeletedCh implements DeletedWatcher
 func (s *Service) DeletedCh(ctx context.Context, cl *k8s.Client) <-chan error {
 	ret := make(chan error)
 	close(ret)
 	return ret
 }
 
+// ReadyCh implements ReadyWatcher
 func (s *Service) ReadyCh(ctx context.Context, cl *k8s.Client) <-chan error {
 	ret := make(chan error)
 	close(ret)
 	return ret
 }
 
+// Get implements Getter
 func (s *Service) Get(ctx context.Context, cl *k8s.Client, name, ns string) error {
 	return cl.Get(ctx, ns, name, s.core)
 }

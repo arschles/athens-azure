@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/arschles/athens-azure/pkg/stringer"
 	"github.com/ericchiang/k8s"
 	corev1 "github.com/ericchiang/k8s/apis/core/v1"
 	extv1beta1 "github.com/ericchiang/k8s/apis/extensions/v1beta1"
@@ -113,4 +114,8 @@ func (i *Ingress) Type() string {
 // Update implements Updater
 func (i *Ingress) Update(ctx context.Context, cl *k8s.Client) error {
 	return cl.Update(ctx, i.core)
+}
+
+func (i *Ingress) String() string {
+	return stringer.ToJSON(i, i.Type())
 }

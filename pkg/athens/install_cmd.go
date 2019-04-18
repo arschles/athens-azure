@@ -10,6 +10,9 @@ import (
 
 func installCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("install", "Install Athens")
+	var dryRun bool
+	ret.PersistentFlags().BoolVar(&dryRun, "dryrun", false, "Do a dry run, and don't modify any Kubernetes resources")
+
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
 
 		img, err := env.CheckOrArg("ATHENS_IMAGE", args, 0)
@@ -21,7 +24,13 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 			return errors.WithStack(err)
 		}
 
-		athensProfile := newProfile(img)
+		athensProfile := kube.NewWebServerProfile(
+			name,
+			namespace,
+			"athens.azurefd.net",
+			3,
+			containerList(img),
+		)
 		if ctx.IsDebug() {
 			ctx.Debugf("Here are the resources that are going to be installed:")
 			resources := athensProfile.AllResources()
@@ -31,13 +40,17 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 			}
 		}
 		ctx.Infof("Setting up and installing %s", athensProfile)
-		if err := kube.SetupAndInstallProfile(
-			ctx,
-			cl,
-			athensProfile,
-			kube.ErrorStrategyContinue,
-		); err != nil {
-			return err
+		if dryRun {
+			ctx.Infof("----> Not doing anything because this is a dry run")
+		} else {
+			if err := kube.SetupAndInstallProfile(
+				ctx,
+				cl,
+				athensProfile,
+				kube.ErrorStrategyContinue,
+			); err != nil {
+				return err
+			}
 		}
 		ctx.Infof("Done")
 		return nil
