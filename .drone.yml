@@ -14,5 +14,7 @@ steps:
   volumes:
   - name: localbin
     path: /usr/local/bin
+  environment:
+  GOPROXY: https://athens.azurefd.net
 
 ...
