@@ -8,6 +8,7 @@ import (
 const namespace = "athens"
 const name = "athens"
 
+// Root returns the tree under 'flanders athens'
 func Root(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("athens", "Install, update, and administrate Athens")
 	ret.AddCommand(installCmd(ctx))
