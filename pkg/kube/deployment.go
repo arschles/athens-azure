@@ -37,6 +37,29 @@ func (d *Deployment) GetImage(idx int) (string, error) {
 	return con.GetImage(), nil
 }
 
+// setReplicas _copies_ d, updates spec.replicas to num on the copy, and
+// returns the copy with the updated value
+//
+// Since this function doesn't copy in place, you'll need to update
+// your deployment to the return value of this function
+func (d *Deployment) setReplicas(num int32) *Deployment {
+	copy := *d
+	copy.core.Spec.Replicas = k8s.Int32(num)
+	return &copy
+}
+
+// setReplicas _copies_ d, updates spec.selector.matchLabels to num
+// on the copy, and returns the copy
+//
+// Since this function doesn't copy in place, you'll need to update
+// your deployment to the return value of this function
+func (d *Deployment) setMatchLabels(m map[string]string) *Deployment {
+	copy := *d
+	copy.core.Spec.Selector.MatchLabels = m
+	return &copy
+}
+
+// Install is the implementation of Installer
 func (d *Deployment) Install(ctx context.Context, cl *k8s.Client) error {
 	return cl.Create(ctx, d.core)
 }
