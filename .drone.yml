@@ -15,9 +15,4 @@ steps:
   - name: localbin
     path: /usr/local/bin
 
-- name: Helm Lint The Athens Chart
-  image: lachlanevenson/k8s-helm
-  commands:
-  - helm lint ./charts/athens
-
 ...
