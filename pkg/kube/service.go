@@ -13,6 +13,29 @@ type Service struct {
 	Installer
 }
 
+func NewService(
+	name,
+	ns string,
+	svcType string,
+	selector map[string]string,
+	ports []*corev1.ServicePort,
+) *Service {
+	return &Service{
+		core: &corev1.Service{
+			Metadata: objectMeta(name, ns),
+			Spec: &corev1.ServiceSpec{
+				Ports:    ports,
+				Type:     k8s.String(svcType),
+				Selector: selector,
+			},
+		},
+	}
+}
+
+func (s *Service) setType(t string) {
+	s.core.Spec.Type = k8s.String(t)
+}
+
 func ServiceFromCore(svc *corev1.Service) *Service {
 	return &Service{core: svc}
 }
