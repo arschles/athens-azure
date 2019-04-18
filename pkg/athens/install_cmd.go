@@ -21,12 +21,7 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 			return errors.WithStack(err)
 		}
 
-		container := kube.NewContainer(name, img)
-		athensProfile := kube.NewWebServerProfile(
-			name,
-			namespace,
-			kube.ContainerList{container},
-		)
+		athensProfile := newProfile(img)
 		ctx.Infof("Setting up and installing %s", athensProfile)
 		if err := kube.SetupAndInstallProfile(
 			ctx,
