@@ -38,15 +38,6 @@ type profile struct {
 	fmt.Stringer
 }
 
-// NewManualProfile creates a new profile out of a list of resources.
-// This profile has no presets
-//
-// TODO: maybe get rid of this in favor of the convenience functions
-// above...
-func NewManualProfile(resources []Resource) Profile {
-	return &profile{resources: resources}
-}
-
 func (p *profile) Setup(
 	ctx context.Context,
 	cl *k8s.Client,
