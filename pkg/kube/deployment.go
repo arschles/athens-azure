@@ -16,6 +16,9 @@ type Deployment struct {
 	core *appsv1.Deployment
 	Resource
 	fmt.Stringer
+	// Note: Deployments implement Resource, but don't embed it here
+	// because the compiler will not give errors if you don't implement
+	// a method in Resource when you put it into a profile
 }
 
 // NewDeployment creates a new deployment with sensible defaults
