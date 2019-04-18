@@ -1,7 +1,9 @@
 package kube
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/ericchiang/k8s"
@@ -13,6 +15,7 @@ import (
 type Deployment struct {
 	core *appsv1.Deployment
 	Resource
+	fmt.Stringer
 }
 
 func NewDeployment(name, ns string, containers ContainerList) *Deployment {
@@ -104,4 +107,16 @@ func (d *Deployment) DeletedCh(context.Context, *k8s.Client) <-chan error {
 // Namespace is the implementation of Namespacer
 func (d *Deployment) Namespace() *Namespace {
 	return NewNamespace(*d.core.Metadata.Namespace)
+}
+
+func (d *Deployment) String() string {
+	b, err := json.Marshal(d.core)
+	if err != nil {
+		return fmt.Sprintf("error marshaling Deployment %s", d.Name())
+	}
+	var buf bytes.Buffer
+	if err := json.Indent(&buf, b, "", "    "); err != nil {
+		return fmt.Sprintf("error indenting JSON for job %s", d.Name())
+	}
+	return string(buf.Bytes())
 }
