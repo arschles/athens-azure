@@ -29,8 +29,10 @@ func NewLongRunningBatchProfile(j *Job) *Profile {
 }
 
 func NewWebServerProfile(name, ns string, containers ContainerList) *Profile {
-	// TODO
-	return nil
+	depl := NewDeployment(name, ns, containers)
+	return &Profile{
+		resources: []Resource{depl},
+	}
 }
 
 // func (p *Profile) Create(ctx context.Context) error {
@@ -59,9 +61,18 @@ func (p *Profile) Update(
 // 	return c.Resource.Get(ctx, c.Client)
 // }
 
+// Resource is a single Kubernetes object that you can do standard CRUD
+// operations on
+type Resource interface {
+	Installer
+	Updater
+	Getter
+}
+
 type ErrorStrategy string
 
 const (
 	ErrorStrategyStop     ErrorStrategy = "stop"
 	ErrorStrategyRollback ErrorStrategy = "rollback"
+	ErrorStrategyIgnore   ErrorStrategy = "ignore"
 )
