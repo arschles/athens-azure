@@ -3,6 +3,7 @@ package kube
 import (
 	"context"
 
+	"github.com/arschles/athens-azure/pkg/stringer"
 	"github.com/ericchiang/k8s"
 	corev1 "github.com/ericchiang/k8s/apis/core/v1"
 )
@@ -99,4 +100,8 @@ func (s *Service) Type() string {
 // Update is the implementation of Updater
 func (s *Service) Update(ctx context.Context, cl *k8s.Client) error {
 	return cl.Update(ctx, s.core)
+}
+
+func (s *Service) String() string {
+	return stringer.ToJSON(*s, s.Type())
 }
