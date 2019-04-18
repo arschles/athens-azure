@@ -36,6 +36,7 @@ func (c *ctx) Infof(fmtStr string, vals ...interface{}) {
 	}
 }
 
+// NewContext creates a new context and turns on debugging if debug is true
 func NewContext(c context.Context, debug bool) Context {
 	return &ctx{
 		Context: context.WithValue(c, "debug", true),
