@@ -25,19 +25,9 @@ type Profile struct {
 	fmt.Stringer
 }
 
-func NewLongRunningBatchProfile(j *Job) *Profile {
-	return &Profile{
-		resources: []Resource{j},
-	}
-}
-
-func NewWebServerProfile(name, ns string, containers ContainerList) *Profile {
-	depl := NewDeployment(name, ns, containers)
-	return &Profile{
-		resources: []Resource{depl},
-	}
-}
-
+// NewManualProfile creates a new profile out of a list of resources.
+// This profile has no presets
+//
 // TODO: maybe get rid of this in favor of the convenience functions
 // above...
 func NewManualProfile(resources []Resource) *Profile {
