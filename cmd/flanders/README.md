@@ -55,4 +55,10 @@ Nothing
 
 Nothing
 
+## Internal
 
+- `spec.rules.host` - we need to get this from somewhere
+  - `http`
+    - `paths.path[0].path` - `/`
+    - `paths.path[0].backend.serviceName` - the name of the service created
+    - `paths.path[0].backend.servicePort` - the external port on the service created
