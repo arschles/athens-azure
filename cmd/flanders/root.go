@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/arschles/athens-azure/pkg/advanced"
 	"github.com/arschles/athens-azure/pkg/athens"
 	"github.com/arschles/athens-azure/pkg/censusai"
 	"github.com/arschles/athens-azure/pkg/cmd"
@@ -30,5 +31,6 @@ func Root() *cobra.Command {
 	root.AddCommand(ingress.Root(ctx))
 	root.AddCommand(athens.Root(ctx))
 	root.AddCommand(crathens.Root(ctx))
+	root.AddCommand(advanced.Root(ctx))
 	return root
 }
