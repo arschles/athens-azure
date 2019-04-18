@@ -70,7 +70,6 @@ func (p *Profile) Install(
 		if err := chWait(ctx, readyCh); err != nil {
 			//TODO: strategy
 		}
-
 	}
 	if len(errs) > 0 {
 		return errlist.Error(errs)
