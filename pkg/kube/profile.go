@@ -38,6 +38,12 @@ func NewWebServerProfile(name, ns string, containers ContainerList) *Profile {
 	}
 }
 
+// TODO: maybe get rid of this in favor of the convenience functions
+// above...
+func NewManualProfile(resources []Resource) *Profile {
+	return &Profile{resources: resources}
+}
+
 // Setup prepares Kubernetes to install the profile. This is doing things
 // like creating namespaces, etc...
 func (p *Profile) Setup(
