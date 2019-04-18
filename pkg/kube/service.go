@@ -99,6 +99,16 @@ func (s *Service) Type() string {
 
 // Update is the implementation of Updater
 func (s *Service) Update(ctx context.Context, cl *k8s.Client) error {
+	name := s.Name()
+	ns := s.Namespace().Name()
+	// make a copy of s and fetch it to get the resource version
+	copy := *s
+	copyPtr := &copy
+	if err := copyPtr.Get(ctx, cl, name, ns); err != nil {
+		return nil
+	}
+	copiedResVer := *copyPtr.core.Metadata.ResourceVersion
+	s.core.Metadata.ResourceVersion = k8s.String(copiedResVer)
 	return cl.Update(ctx, s.core)
 }
 
