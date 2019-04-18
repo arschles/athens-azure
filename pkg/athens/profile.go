@@ -9,7 +9,9 @@ func newProfile(img string) *kube.Profile {
 
 func athensDeployment(img string) *kube.Deployment {
 	clist := containerList(img)
-	return kube.NewDeployment(name, namespace, clist)
+	return kube.NewDeployment(name, namespace, map[string]string{
+		"app": "athens",
+	}, clist)
 }
 
 func containerList(img string) kube.ContainerList {
