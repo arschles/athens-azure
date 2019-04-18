@@ -29,6 +29,7 @@ func NewDeployment(name, ns string, containers ContainerList) *Deployment {
 	}
 }
 
+// GetImage returns the image name for the idx'th container
 func (d *Deployment) GetImage(idx int) (string, error) {
 	con := containerFromPodTemplateSpec(d.core.Spec.Template, idx)
 	if con == nil {
