@@ -91,6 +91,7 @@ func (s *Service) Get(ctx context.Context, cl *k8s.Client, name, ns string) erro
 	return cl.Get(ctx, ns, name, s.core)
 }
 
+// Type implements Typer
 func (s *Service) Type() string {
 	return "Service"
 }
