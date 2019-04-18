@@ -35,9 +35,23 @@ func NewWebServerProfile(name, ns string, containers ContainerList) *Profile {
 	}
 }
 
-// func (p *Profile) Create(ctx context.Context) error {
-// 	return p.Resource.Install(ctx, p.Client)
-// }
+func (p *Profile) Install(
+	ctx context.Context,
+	cl *k8s.Client,
+	strat ErrorStrategy,
+) error {
+	errs := []error{}
+	for _, res := range p.resources {
+		if err := res.Install(ctx, cl); err != nil {
+			// TODO: strategy
+			errs = append(errs, err)
+		}
+	}
+	if len(errs) > 0 {
+		return errlist.Error(errs)
+	}
+	return nil
+}
 
 func (p *Profile) Update(
 	ctx context.Context,
