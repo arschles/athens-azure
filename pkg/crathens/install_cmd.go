@@ -12,7 +12,7 @@ import (
 
 const imgEnvVar = "CRATHENS_IMAGE"
 
-func installCmd(ctx cmd.Context, debug bool) *cobra.Command {
+func installCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("install", "Install Crathens")
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
 		img, err := env.CheckOrArg(imgEnvVar, args, 0)
@@ -28,11 +28,7 @@ func installCmd(ctx cmd.Context, debug bool) *cobra.Command {
 		}
 
 		jobContainer := kube.NewContainer("crathens", img)
-		job := kube.NewJob(
-			"crathens-job",
-			namespace,
-			kube.ContainerList{jobContainer},
-		)
+		job := crathensJob(kube.ContainerList{jobContainer})
 
 		ctx.Debugf("job:\n%s", job)
 

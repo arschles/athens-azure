@@ -15,6 +15,7 @@ type Job struct {
 	fmt.Stringer
 	Installer
 	Namer
+	Getter
 }
 
 func NewJob(name, ns string, containers ContainerList) *Job {
@@ -36,6 +37,18 @@ func (j *Job) Install(ctx context.Context, cl *k8s.Client) error {
 
 func (j *Job) Name() string {
 	return *j.core.Metadata.Name
+}
+
+func (j *Job) Get(ctx context.Context, cl *k8s.Client, name, ns string) error {
+	return cl.Get(ctx, ns, name, j.core)
+}
+
+func (j *Job) GetImage(idx int) (string, error) {
+	con := containerFromPodTemplateSpec(j.core.Spec.Template, idx)
+	if con == nil {
+		return "", fmt.Errorf("container %d doesn't exist", idx)
+	}
+	return con.GetImage(), nil
 }
 
 func (j *Job) String() string {

@@ -6,7 +6,6 @@ import (
 
 	"github.com/ericchiang/k8s"
 	appsv1 "github.com/ericchiang/k8s/apis/apps/v1"
-	corev1 "github.com/ericchiang/k8s/apis/core/v1"
 )
 
 // Deployment is a convenience wrapper around a k8s deployment object
@@ -14,6 +13,7 @@ type Deployment struct {
 	core *appsv1.Deployment
 	Installer
 	Updater
+	Getter
 }
 
 func NewDeployment(name, ns string, containers ContainerList) *Deployment {
@@ -28,20 +28,13 @@ func NewDeployment(name, ns string, containers ContainerList) *Deployment {
 }
 
 func (d *Deployment) GetImage(idx int) (string, error) {
-	containers := d.containers()
-	if len(containers) < idx+1 {
-		return "", fmt.Errorf(
-			"requested container %d, but there were only %d",
-			idx+1,
-			len(containers),
-		)
+	con := containerFromPodTemplateSpec(d.core.Spec.Template, idx)
+	if con == nil {
+		return "", fmt.Errorf("container %d doesn't exist", idx)
 	}
-	return containers[idx].GetImage(), nil
+	return con.GetImage(), nil
 }
 
-func (d *Deployment) containers() []*corev1.Container {
-	return d.core.Spec.Template.Spec.Containers
-}
 func (d *Deployment) Install(ctx context.Context, cl *k8s.Client) error {
 	return cl.Create(ctx, d.core)
 }
