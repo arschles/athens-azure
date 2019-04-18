@@ -10,12 +10,16 @@ import (
 	batchv1 "github.com/ericchiang/k8s/apis/batch/v1"
 )
 
+// Job is a convenience wrapper around Kubernetes jobs
 type Job struct {
 	core *batchv1.Job
 	fmt.Stringer
-	Resource
+	// Note: Jobs implement Resource, but don't embed it here
+	// because the compiler will not give errors if you don't implement
+	// a method in Resource when you put it into a profile
 }
 
+// NewJob creates a new Job with sensible defaults
 func NewJob(name, ns string, containers ContainerList) *Job {
 	ret := &Job{
 		core: &batchv1.Job{
@@ -29,10 +33,17 @@ func NewJob(name, ns string, containers ContainerList) *Job {
 	return ret
 }
 
+// Install implements Installer
 func (j *Job) Install(ctx context.Context, cl *k8s.Client) error {
 	return cl.Create(ctx, j.core)
 }
 
+// Update implements Updater
+func (j *Job) Update(ctx context.Context, cl *k8s.Client) error {
+	return cl.Update(ctx, j.core)
+}
+
+// Name implements Namer
 func (j *Job) Name() string {
 	return *j.core.Metadata.Name
 }
@@ -58,6 +69,7 @@ func (j *Job) Namespace() *Namespace {
 	return NewNamespace(*j.core.Metadata.Namespace)
 }
 
+// DeletedCh implements DeletedWatcher
 func (j *Job) DeletedCh(context.Context, *k8s.Client) <-chan error {
 	// TODO
 	ch := make(chan error)
@@ -65,10 +77,12 @@ func (j *Job) DeletedCh(context.Context, *k8s.Client) <-chan error {
 	return ch
 }
 
+// Type implements Typer
 func (j *Job) Type() string {
 	return "Job"
 }
 
+// ReadyCh implements ReadyWatcher
 func (j *Job) ReadyCh(context.Context, *k8s.Client) <-chan error {
 	// TODO
 	ch := make(chan error)
@@ -76,6 +90,7 @@ func (j *Job) ReadyCh(context.Context, *k8s.Client) <-chan error {
 	return ch
 }
 
+// String implements Stringer
 func (j *Job) String() string {
 	b, err := json.Marshal(j.core)
 	if err != nil {
