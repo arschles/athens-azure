@@ -8,8 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const namespace = "athens"
-
 func installCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("install", "Install Athens")
 	ret.RunE = func(cmd *cobra.Command, args []string) error {

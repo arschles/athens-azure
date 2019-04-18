@@ -4,7 +4,7 @@ import "github.com/arschles/athens-azure/pkg/kube"
 
 func athensDeployment(img string) *kube.Deployment {
 	containerList := kube.ContainerList{
-		kube.NewContainer("athens", img),
+		kube.NewContainer(name, img),
 	}
-	return kube.NewDeployment("athens", namespace, containerList)
+	return kube.NewDeployment(name, namespace, containerList)
 }
