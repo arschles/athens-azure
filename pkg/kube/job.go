@@ -1,11 +1,10 @@
 package kube
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 
+	"github.com/arschles/athens-azure/pkg/stringer"
 	"github.com/ericchiang/k8s"
 	batchv1 "github.com/ericchiang/k8s/apis/batch/v1"
 )
@@ -92,13 +91,5 @@ func (j *Job) ReadyCh(context.Context, *k8s.Client) <-chan error {
 
 // String implements Stringer
 func (j *Job) String() string {
-	b, err := json.Marshal(j.core)
-	if err != nil {
-		return fmt.Sprintf("error marshaling Job %s", j.Name())
-	}
-	var buf bytes.Buffer
-	if err := json.Indent(&buf, b, "", "    "); err != nil {
-		return fmt.Sprintf("error indenting JSON for job %s", j.Name())
-	}
-	return string(buf.Bytes())
+	return stringer.ToJSON(*j, j.Type())
 }

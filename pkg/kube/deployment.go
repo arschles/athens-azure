@@ -134,5 +134,5 @@ func (d *Deployment) Namespace() *Namespace {
 }
 
 func (d *Deployment) String() string {
-	return stringer.ToJSON(d, d.Type())
+	return stringer.ToJSON(*d, d.Type())
 }
