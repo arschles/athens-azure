@@ -2,7 +2,7 @@ package athens
 
 import "github.com/arschles/athens-azure/pkg/kube"
 
-func newProfile(img string) *kube.Profile {
+func newProfile(img string) kube.Profile {
 	depl := athensDeployment(img)
 	return kube.NewManualProfile([]kube.Resource{depl})
 }

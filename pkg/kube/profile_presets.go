@@ -3,8 +3,8 @@ package kube
 // NewLongRunningBatchProfile creates a new profile that contains all the
 // kubernetes resources you need to launch or update a long running batch
 // job
-func NewLongRunningBatchProfile(j *Job) *Profile {
-	return &Profile{
+func NewLongRunningBatchProfile(j *Job) Profile {
+	return &profile{
 		resources: []Resource{j},
 	}
 }
@@ -17,7 +17,7 @@ func NewWebServerProfile(
 	host string,
 	replicas int32,
 	containers ContainerList,
-) *Profile {
+) Profile {
 	res := []Resource{}
 
 	svcPorts := containers.toServicePorts()
@@ -62,7 +62,7 @@ func NewWebServerProfile(
 		ing := NewIngress(name, ns, host, "/", svcName, *svcPort)
 		res = append(res, ing)
 	}
-	return &Profile{
+	return &profile{
 		resources: []Resource{depl},
 	}
 }

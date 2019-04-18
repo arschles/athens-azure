@@ -20,7 +20,20 @@ import (
 // Profiles represent "sensible defaults", and they are represented
 // internally as lists of Resources that are installed in order
 // and uninstalled in reverse-order
-type Profile struct {
+type Profile interface {
+	fmt.Stringer
+	// Setup prepares Kubernetes to install the profile. This is doing things
+	// like creating namespaces, etc...
+	Setup(context.Context, *k8s.Client, ErrorStrategy) error
+	// AllResources returns all the Kubernetes resources in this profile, in the
+	// order they're stored
+	AllResources() []Resource
+	Install(context.Context, *k8s.Client, ErrorStrategy) error
+	// Uninstall calls Delete on all resources in the profile, in reverse order
+	Uninstall(context.Context, *k8s.Client, ErrorStrategy) error
+}
+
+type profile struct {
 	resources []Resource
 	fmt.Stringer
 }
@@ -30,13 +43,11 @@ type Profile struct {
 //
 // TODO: maybe get rid of this in favor of the convenience functions
 // above...
-func NewManualProfile(resources []Resource) *Profile {
-	return &Profile{resources: resources}
+func NewManualProfile(resources []Resource) Profile {
+	return &profile{resources: resources}
 }
 
-// Setup prepares Kubernetes to install the profile. This is doing things
-// like creating namespaces, etc...
-func (p *Profile) Setup(
+func (p *profile) Setup(
 	ctx context.Context,
 	cl *k8s.Client,
 	strat ErrorStrategy,
@@ -55,7 +66,7 @@ func (p *Profile) Setup(
 	return nil
 }
 
-func (p *Profile) Install(
+func (p *profile) Install(
 	ctx context.Context,
 	cl *k8s.Client,
 	strat ErrorStrategy,
@@ -78,7 +89,7 @@ func (p *Profile) Install(
 }
 
 // Uninstall calls Delete on all resources in the profile, in reverse order
-func (p *Profile) Uninstall(
+func (p *profile) Uninstall(
 	ctx context.Context,
 	cl *k8s.Client,
 	strat ErrorStrategy,
@@ -101,7 +112,7 @@ func (p *Profile) Uninstall(
 	return nil
 }
 
-func (p *Profile) Update(
+func (p *profile) Update(
 	ctx context.Context,
 	cl *k8s.Client,
 	strat ErrorStrategy,
@@ -123,7 +134,7 @@ func (p *Profile) Update(
 	return nil
 }
 
-func (p *Profile) String() string {
+func (p *profile) String() string {
 	strs := make([]string, len(p.resources))
 	for i, res := range p.resources {
 		strs[i] = fmt.Sprintf(
@@ -136,9 +147,7 @@ func (p *Profile) String() string {
 	return strings.Join(strs, "\n")
 }
 
-// AllResources returns all the Kubernetes resources in this profile, in the
-// order they're stored
-func (p *Profile) AllResources() []Resource {
+func (p *profile) AllResources() []Resource {
 	return p.resources
 }
 
@@ -147,7 +156,7 @@ func (p *Profile) AllResources() []Resource {
 func SetupAndInstallProfile(
 	ctx context.Context,
 	cl *k8s.Client,
-	pr *Profile,
+	pr Profile,
 	strat ErrorStrategy,
 ) error {
 	// TODO: error strategy
@@ -160,6 +169,8 @@ func SetupAndInstallProfile(
 	return nil
 }
 
+// ErrorStrategy is the strategy that a profile takes when installing,
+// uninstalling, and updating resources
 type ErrorStrategy string
 
 const (
