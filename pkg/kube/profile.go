@@ -43,7 +43,6 @@ type Profile interface {
 
 type profile struct {
 	resources []resources.Resource
-	fmt.Stringer
 }
 
 func (p *profile) Setup(
@@ -51,21 +50,14 @@ func (p *profile) Setup(
 	cl *k8s.Client,
 	strat ErrorStrategy,
 ) error {
-	errs := []error{}
-	for _, res := range p.resources {
+	return forEachResource(p.resources, strat, func(res resources.Resource) error {
 		ns := res.Namespace()
+		readyCh := ns.ReadyCh(ctx, cl)
 		if err := ns.Install(ctx, cl); err != nil {
-			// TODO: strategy
-			errs = append(errs, err)
-		} else if err := chWait(ctx, ns.ReadyCh()); err != nil {
-			// TODO: strategy
-			errs = append(errs, err)
+			return err
 		}
-	}
-	if len(errs) > 0 {
-		return errlist.Error(errs)
-	}
-	return nil
+		return chWait(ctx, readyCh)
+	})
 }
 
 func (p *profile) Install(
@@ -73,20 +65,13 @@ func (p *profile) Install(
 	cl *k8s.Client,
 	strat ErrorStrategy,
 ) error {
-	errs := []error{}
-	for _, res := range p.resources {
+	return forEachResource(p.resources, strat, func(res resources.Resource) error {
 		readyCh := res.ReadyCh(ctx, cl)
 		if err := res.Install(ctx, cl); err != nil {
-			// TODO: strategy
-			errs = append(errs, err)
-		} else if err := chWait(ctx, readyCh); err != nil {
-			//TODO: strategy
+			return err
 		}
-	}
-	if len(errs) > 0 {
-		return errlist.Error(errs)
-	}
-	return nil
+		return chWait(ctx, readyCh)
+	})
 }
 
 // Uninstall calls Delete on all resources in the profile, in reverse order
@@ -95,21 +80,13 @@ func (p *profile) Uninstall(
 	cl *k8s.Client,
 	strat ErrorStrategy,
 ) error {
-	errs := []error{}
-	for i := len(p.resources) - 1; i >= 0; i-- {
-		res := p.resources[i]
+	return forEachResourceReverse(p.resources, strat, func(res resources.Resource) error {
 		deletedCh := res.DeletedCh(ctx, cl)
 		if err := res.Delete(ctx, cl); err != nil {
-			// TODO: strategy
-			errs = append(errs, err)
-		} else if err := chWait(ctx, deletedCh); err != nil {
-			//TODO: strategy
+			return err
 		}
-	}
-	if len(errs) > 0 {
-		return errlist.Error(errs)
-	}
-	return nil
+		return chWait(ctx, deletedCh)
+	})
 }
 
 func (p *profile) Update(
@@ -117,31 +94,37 @@ func (p *profile) Update(
 	cl *k8s.Client,
 	strat ErrorStrategy,
 ) error {
-	errs := []error{}
-	for _, res := range p.resources {
-		readyCh := res.ReadyCh(ctx, cl)
-		if err := res.Update(ctx, cl); err != nil {
-			// TODO: strategy
-			errs = append(errs, err)
-		} else if err := chWait(ctx, readyCh); err != nil {
-			// TODO: strategy
-		}
-	}
-	if len(errs) > 0 {
-		return errlist.Error(errs)
-	}
-	return nil
+	return forEachResource(
+		p.resources,
+		strat,
+		func(res resources.Resource) error {
+			readyCh := res.ReadyCh(ctx, cl)
+			if err := res.Update(ctx, cl); err != nil {
+				return err
+			}
+			return chWait(ctx, readyCh)
+		},
+	)
 }
 
 func (p *profile) String() string {
 	strs := make([]string, len(p.resources))
-	for i, res := range p.resources {
-		strs[i] = fmt.Sprintf(
-			"%s: %s/%s",
-			res.Type(),
-			res.Namespace().Name(),
-			res.Name(),
-		)
+	if err := forEachResourceIdx(
+		p.resources,
+		ErrorStrategyContinue,
+		func(i int, res resources.Resource) error {
+			strs[i] = fmt.Sprintf(
+				"%s: %s/%s",
+				res.Type(),
+				res.Namespace().Name(),
+				res.Name(),
+			)
+			return nil
+		},
+	); err != nil {
+		// There's not gonna be an error b/c we always return nil from the
+		// closure
+		return ""
 	}
 	return strings.Join(strs, "\n")
 }
@@ -151,16 +134,13 @@ func (p *profile) AllResources() []resources.Resource {
 }
 
 func (p *profile) Status(ctx context.Context, cl *k8s.Client) error {
-	errs := []error{}
-	for _, res := range p.resources {
-		if err := res.Get(ctx, cl, res.Name(), res.Namespace().Name()); err != nil {
-			errs = append(errs, err)
-		}
-	}
-	if len(errs) > 0 {
-		return errlist.Error(errs)
-	}
-	return nil
+	return forEachResource(
+		p.resources,
+		ErrorStrategyContinue,
+		func(res resources.Resource) error {
+			return res.Get(ctx, cl, res.Name(), res.Namespace().Name())
+		},
+	)
 }
 
 // SetupAndInstallProfile calls pr.Setup and then pr.Install according to
@@ -191,4 +171,51 @@ func chWait(ctx context.Context, ch <-chan error) error {
 		}
 		return nil
 	}
+}
+
+func forEachResource(
+	res []resources.Resource,
+	strat ErrorStrategy,
+	fn func(resources.Resource) error,
+) error {
+	return forEachResourceIdx(res, strat, func(_ int, r resources.Resource) error {
+		return fn(r)
+	})
+}
+
+func forEachResourceIdx(
+	resources []resources.Resource,
+	strat ErrorStrategy,
+	fn func(int, resources.Resource) error,
+) error {
+	errs := []error{}
+	for i, prof := range resources {
+		if err := fn(i, prof); err != nil {
+			// TODO: error strategy
+			errs = append(errs, err)
+		}
+	}
+	if len(errs) > 0 {
+		return errlist.Error(errs)
+	}
+	return nil
+}
+
+func forEachResourceReverse(
+	resources []resources.Resource,
+	strat ErrorStrategy,
+	fn func(resources.Resource) error,
+) error {
+	errs := []error{}
+	for i := len(resources) - 1; i >= 0; i-- {
+		res := resources[i]
+		if err := fn(res); err != nil {
+			// TODO: error strategy
+			errs = append(errs, err)
+		}
+	}
+	if len(errs) > 0 {
+		return errlist.Error(errs)
+	}
+	return nil
 }
