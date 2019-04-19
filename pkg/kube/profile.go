@@ -57,6 +57,9 @@ func (p *profile) Setup(
 		if err := ns.Install(ctx, cl); err != nil {
 			// TODO: strategy
 			errs = append(errs, err)
+		} else if err := chWait(ctx, ns.ReadyCh()); err != nil {
+			// TODO: strategy
+			errs = append(errs, err)
 		}
 	}
 	if len(errs) > 0 {
@@ -76,8 +79,7 @@ func (p *profile) Install(
 		if err := res.Install(ctx, cl); err != nil {
 			// TODO: strategy
 			errs = append(errs, err)
-		}
-		if err := chWait(ctx, readyCh); err != nil {
+		} else if err := chWait(ctx, readyCh); err != nil {
 			//TODO: strategy
 		}
 	}
@@ -100,8 +102,7 @@ func (p *profile) Uninstall(
 		if err := res.Delete(ctx, cl); err != nil {
 			// TODO: strategy
 			errs = append(errs, err)
-		}
-		if err := chWait(ctx, deletedCh); err != nil {
+		} else if err := chWait(ctx, deletedCh); err != nil {
 			//TODO: strategy
 		}
 	}
@@ -122,8 +123,7 @@ func (p *profile) Update(
 		if err := res.Update(ctx, cl); err != nil {
 			// TODO: strategy
 			errs = append(errs, err)
-		}
-		if err := chWait(ctx, readyCh); err != nil {
+		} else if err := chWait(ctx, readyCh); err != nil {
 			// TODO: strategy
 		}
 	}
