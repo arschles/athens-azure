@@ -19,8 +19,8 @@ type ProfileComposer struct {
 	profiles []Profile
 }
 
-// NewProfileComposer creates a new ProfileComposer from a list of profiles
-func NewProfileComposer(profiles []Profile) *ProfileComposer {
+// NewComposedProfile creates a new ProfileComposer from a list of profiles
+func NewComposedProfile(profiles ...Profile) *ProfileComposer {
 	return &ProfileComposer{
 		profiles: profiles,
 	}
@@ -99,6 +99,28 @@ func (p *ProfileComposer) Uninstall(
 		return err
 	}
 	return nil
+}
+
+// Update implements Profile
+func (p *ProfileComposer) Update(ctx context.Context, cl *k8s.Client, strat ErrorStrategy) error {
+	return forEachProfile(
+		p.profiles,
+		strat,
+		func(pr Profile) error {
+			return pr.Update(ctx, cl, strat)
+		},
+	)
+}
+
+// Status implements Profile
+func (p *ProfileComposer) Status(ctx context.Context, cl *k8s.Client) error {
+	return forEachProfile(
+		p.profiles,
+		ErrorStrategyContinue,
+		func(pr Profile) error {
+			return pr.Status(ctx, cl)
+		},
+	)
 }
 
 func forEachProfile(

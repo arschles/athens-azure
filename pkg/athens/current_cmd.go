@@ -11,11 +11,15 @@ func currentCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("current", "Get the current state of the running Athens")
 
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
+		imgs, err := getImages(args)
+		if err != nil {
+			return err
+		}
 		cl, err := kube.LoadClientFromDiskKubeConfig()
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		prof := newProfile("")
+		prof := newProfile(imgs)
 		if err := prof.Status(ctx, cl); err != nil {
 			ctx.Infof("Error! %s", err)
 			return err

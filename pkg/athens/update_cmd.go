@@ -10,7 +10,7 @@ import (
 func updateCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("update", "Upgrade the Athens image (WIP)")
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
-		newImg, err := getImage(args)
+		imgs, err := getImages(args)
 		if err != nil {
 			return err
 		}
@@ -18,7 +18,7 @@ func updateCmd(ctx cmd.Context) *cobra.Command {
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		profile := newProfile(newImg)
+		profile := newProfile(imgs)
 		if err := profile.Update(ctx, cl, kube.ErrorStrategyContinue); err != nil {
 			return err
 		}

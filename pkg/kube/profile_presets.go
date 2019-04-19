@@ -5,9 +5,14 @@ import "github.com/arschles/athens-azure/pkg/kube/resources"
 // NewLongRunningBatchProfile creates a new profile that contains all the
 // kubernetes resources you need to launch or update a long running batch
 // job
-func NewLongRunningBatchProfile(j *resources.Job) Profile {
+func NewLongRunningBatchProfile(
+	name,
+	ns string,
+	cl resources.ContainerList,
+) Profile {
+	job := resources.NewJob(name, ns, cl)
 	return &profile{
-		resources: []resources.Resource{j},
+		resources: []resources.Resource{job},
 	}
 }
 

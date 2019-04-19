@@ -15,7 +15,7 @@ func uninstallCmd(ctx cmd.Context) *cobra.Command {
 			return errors.WithStack(err)
 		}
 
-		athensProfile := newProfile("")
+		athensProfile := newProfile(&images{})
 		if ctx.IsDebug() {
 			ctx.Debugf("Here are the resources that are going to be uninstalled:")
 			resources := athensProfile.AllResources()

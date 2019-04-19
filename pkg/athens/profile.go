@@ -5,17 +5,34 @@ import (
 	"github.com/arschles/athens-azure/pkg/kube/resources"
 )
 
-func newProfile(img string) kube.Profile {
-	return kube.NewWebServerProfile(
-		name,
-		namespace,
+func newProfile(imgs *images) kube.Profile {
+	athensContainers := containerList(athensName, imgs.athens)
+	athensProfile := kube.NewWebServerProfile(
+		athensName,
+		athensNS,
+		"", // TODO: make sure ingresses don't set up a host if this is empty
+		3,
+		athensContainers,
+	)
+	crathensContainers := containerList(crathensName, imgs.crathens)
+	crathensProfile := kube.NewLongRunningBatchProfile(
+		crathensName,
+		crathensNS,
+		crathensContainers,
+	)
+
+	lathensContainers := containerList(lathensName, imgs.lathens)
+	lathensProfile := kube.NewWebServerProfile(
+		lathensName,
+		lathensNS,
 		"athens.azurefd.net",
 		3,
-		containerList(img),
+		lathensContainers,
 	)
+	return kube.NewComposedProfile(athensProfile, crathensProfile, lathensProfile)
 }
 
-func containerList(img string) resources.ContainerList {
+func containerList(name, img string) resources.ContainerList {
 	return resources.ContainerList{
 		resources.NewContainer(name, img, 3000),
 	}
