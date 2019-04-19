@@ -58,7 +58,7 @@ func NewWebServerProfile(
 	// only set up an ingres
 	if len(svcPorts) > 0 {
 		svcName := svc.Name()
-		svcPort := svcPorts[0]
+		svcPort := svcPorts[0].Port
 		ing := NewIngress(name, ns, host, "/", svcName, *svcPort)
 		res = append(res, ing)
 	}

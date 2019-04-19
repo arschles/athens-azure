@@ -6,7 +6,6 @@ import (
 
 	"github.com/arschles/athens-azure/pkg/stringer"
 	"github.com/ericchiang/k8s"
-	corev1 "github.com/ericchiang/k8s/apis/core/v1"
 	extv1beta1 "github.com/ericchiang/k8s/apis/extensions/v1beta1"
 )
 
@@ -28,24 +27,9 @@ func NewIngress(
 	host,
 	path,
 	svcName string,
-	svcPort corev1.ServicePort,
+	svcPort int32,
 ) *Ingress {
-	rule := &extv1beta1.IngressRule{
-		Host: k8s.String(host),
-		IngressRuleValue: &extv1beta1.IngressRuleValue{
-			Http: &extv1beta1.HTTPIngressRuleValue{
-				Paths: []*extv1beta1.HTTPIngressPath{
-					&extv1beta1.HTTPIngressPath{
-						Path: k8s.String("/"),
-						Backend: &extv1beta1.IngressBackend{
-							ServiceName: k8s.String(svcName),
-							ServicePort: newIntOrString(*svcPort.Port),
-						},
-					},
-				},
-			},
-		},
-	}
+	rule := newIngressRule(host, path, svcName, svcPort)
 	return &Ingress{
 		core: &extv1beta1.Ingress{
 			Metadata: objectMeta(name, ns),
@@ -57,6 +41,32 @@ func NewIngress(
 		},
 	}
 }
+
+// gets the first host in the list of ingress rules, or an error if there
+// are no ingress rules
+func (i *Ingress) getHost() (string, error) {
+	rules := i.core.Spec.Rules
+	if len(rules) <= 0 {
+		return "", fmt.Errorf("No ingress rules are listed, so no host")
+	}
+	return *rules[0].Host, nil
+}
+
+// func (i *Ingress) setHost(h string)*Ingress {
+// 	copy := *i
+// 	copyPtr := &copy
+// 	rules := copyPtr.core.Spec.Rules
+// 	if len(rules) < 1 {
+// 		newRule := newIngressRule(h, copyPtr.getPath())
+// 		copyPtr.core.Spec.Rules = []*extv1beta1.IngressRule{
+// 					rule,
+// 				},
+// 	}
+// 	rules := i.core.Spec.Rules
+// 	if len(rules) < 1 {
+// 		i.core.Spec.Rules
+// 	}
+// }
 
 // Install implements Installer
 func (i *Ingress) Install(ctx context.Context, cl *k8s.Client) error {
@@ -106,7 +116,32 @@ func (i *Ingress) Type() string {
 
 // Update implements Updater
 func (i *Ingress) Update(ctx context.Context, cl *k8s.Client) error {
-	return cl.Update(ctx, i.core)
+	name := i.Name()
+	ns := i.Namespace().Name()
+	copy := *i
+	copyPtr := &copy
+	if err := copyPtr.Get(ctx, cl, name, ns); err != nil {
+		return err
+	}
+	origHost, err := i.getHost()
+	if err != nil {
+		return err
+	}
+	newHost, err := copyPtr.getHost()
+	if err != nil {
+		return err
+	}
+	// no change, so bail
+	if origHost == newHost {
+		return nil
+	}
+	// TODO: set and update the host
+	// if err := copyPtr.setHost(newHost).Update(ctx, cl); err != nil {
+	// 	return err
+	// }
+
+	// user should only be able to update the domain
+	return nil
 }
 
 func (i *Ingress) String() string {

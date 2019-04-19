@@ -99,7 +99,17 @@ func (d *Deployment) Install(ctx context.Context, cl *k8s.Client) error {
 
 // Update is the implementation of Updater
 func (d *Deployment) Update(ctx context.Context, cl *k8s.Client) error {
-	return cl.Update(ctx, d.core)
+	// user should be only able to update:
+	//
+	// - replicas
+	// - name
+	// - image
+	// - env
+	// - healthy HTTP path
+	// - ready HTTP path
+	// - port
+
+	return nil
 }
 
 // Delete implements Deleter
