@@ -1,11 +1,13 @@
 package kube
 
+import "github.com/arschles/athens-azure/pkg/kube/resources"
+
 // NewLongRunningBatchProfile creates a new profile that contains all the
 // kubernetes resources you need to launch or update a long running batch
 // job
-func NewLongRunningBatchProfile(j *Job) Profile {
+func NewLongRunningBatchProfile(j *resources.Job) Profile {
 	return &profile{
-		resources: []Resource{j},
+		resources: []resources.Resource{j},
 	}
 }
 
@@ -16,41 +18,42 @@ func NewWebServerProfile(
 	ns,
 	host string,
 	replicas int32,
-	containers ContainerList,
+	containers resources.ContainerList,
 ) Profile {
-	res := []Resource{}
+	res := []resources.Resource{}
 
-	svcPorts := containers.toServicePorts()
+	svcPorts := containers.GetServicePorts()
 
 	// set up the deployment
-	depl := NewDeployment(name, ns, map[string]string{
+	depl := resources.NewDeployment(name, ns, map[string]string{
 		"app": name,
 	}, containers)
 
-	depl = depl.setReplicas(replicas)
+	depl = depl.WithReplicas(replicas)
 	// depl = depl.setMatchLabels(map[string]string{
 	// 	"app": name,
 	// 	// "release": rel
 	// })
 
-	depl = depl.setTplMetadataLabels(map[string]string{
+	depl = depl.WithTplMetadataLabels(map[string]string{
 		"app": name,
 	})
 	res = append(res, depl)
 
 	// set up the service
-	svc := NewService(
+	svc := resources.NewService(
 		name,
 		ns,
 		"None",
-		depl.core.Spec.Template.Metadata.Labels,
+		// depl.core.Spec.Template.Metadata.Labels,
+		depl.GetTplMetadataLabels(),
 		svcPorts,
 	)
 	// if there were any ports exposed on the container, set the service
 	// type to 'ClusterIP' so that it's network accessible from the
 	// ingress controller
 	if len(svcPorts) > 0 {
-		svc = svc.setType("ClusterIP")
+		svc = svc.WithType("ClusterIP")
 	}
 	res = append(res, svc)
 
@@ -59,7 +62,7 @@ func NewWebServerProfile(
 	if len(svcPorts) > 0 {
 		svcName := svc.Name()
 		svcPort := svcPorts[0].Port
-		ing := NewIngress(name, ns, host, "/", svcName, *svcPort)
+		ing := resources.NewIngress(name, ns, host, "/", svcName, *svcPort)
 		res = append(res, ing)
 	}
 	return &profile{

@@ -3,6 +3,7 @@ package crathens
 import (
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/arschles/athens-azure/pkg/kube"
+	"github.com/arschles/athens-azure/pkg/kube/resources"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +16,7 @@ func currentCmd(ctx cmd.Context) *cobra.Command {
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		job := crathensJob(kube.ContainerList{})
+		job := crathensJob(resources.ContainerList{})
 		if err := job.Get(ctx, cl, name, namespace); err != nil {
 			return errors.WithStack(err)
 		}

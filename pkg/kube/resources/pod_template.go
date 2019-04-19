@@ -1,4 +1,4 @@
-package kube
+package resources
 
 import (
 	corev1 "github.com/ericchiang/k8s/apis/core/v1"

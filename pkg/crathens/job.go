@@ -1,9 +1,9 @@
 package crathens
 
 import (
-	"github.com/arschles/athens-azure/pkg/kube"
+	"github.com/arschles/athens-azure/pkg/kube/resources"
 )
 
-func crathensJob(cl kube.ContainerList) *kube.Job {
-	return kube.NewJob(name, namespace, cl)
+func crathensJob(cl resources.ContainerList) *resources.Job {
+	return resources.NewJob(name, namespace, cl)
 }

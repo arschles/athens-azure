@@ -1,6 +1,9 @@
 package athens
 
-import "github.com/arschles/athens-azure/pkg/kube"
+import (
+	"github.com/arschles/athens-azure/pkg/kube"
+	"github.com/arschles/athens-azure/pkg/kube/resources"
+)
 
 func newProfile(img string) kube.Profile {
 	return kube.NewWebServerProfile(
@@ -12,8 +15,8 @@ func newProfile(img string) kube.Profile {
 	)
 }
 
-func containerList(img string) kube.ContainerList {
-	return kube.ContainerList{
-		kube.NewContainer(name, img, 3000),
+func containerList(img string) resources.ContainerList {
+	return resources.ContainerList{
+		resources.NewContainer(name, img, 3000),
 	}
 }

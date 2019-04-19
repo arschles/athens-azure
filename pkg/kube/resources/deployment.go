@@ -1,4 +1,4 @@
-package kube
+package resources
 
 import (
 	"context"
@@ -59,12 +59,12 @@ func (d *Deployment) Name() string {
 	return *d.core.Metadata.Name
 }
 
-// setReplicas _copies_ d, updates spec.replicas to num on the copy, and
+// WithReplicas _copies_ d, updates spec.replicas to num on the copy, and
 // returns the copy with the updated value
 //
 // Since this function doesn't copy in place, you'll need to update
 // your deployment to the return value of this function
-func (d *Deployment) setReplicas(num int32) *Deployment {
+func (d *Deployment) WithReplicas(num int32) *Deployment {
 	copy := *d
 	copy.core.Spec.Replicas = k8s.Int32(num)
 	return &copy
@@ -81,15 +81,20 @@ func (d *Deployment) setMatchLabels(m map[string]string) *Deployment {
 	return &copy
 }
 
-// setTplMetadataLabels _copies_ d, updates spec.template.metadata.labels to m
+// WithTplMetadataLabels _copies_ d, updates spec.template.metadata.labels to m
 // on the copy, and returns the copy
 //
 // Since this function doesn't copy in place, you'll need to update
 // your deployment to the return value of this function
-func (d *Deployment) setTplMetadataLabels(m map[string]string) *Deployment {
+func (d *Deployment) WithTplMetadataLabels(m map[string]string) *Deployment {
 	copy := *d
 	copy.core.Spec.Template.Metadata.Labels = m
 	return &copy
+}
+
+// GetTplMetadataLabels returns the value of spec.template.metadata.labels
+func (d *Deployment) GetTplMetadataLabels() map[string]string {
+	return d.core.Spec.Template.Metadata.Labels
 }
 
 // Install is the implementation of Installer

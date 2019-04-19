@@ -1,4 +1,4 @@
-package kube
+package resources
 
 import (
 	"fmt"
@@ -38,7 +38,9 @@ func (c *Container) toCore() *corev1.Container {
 	return c.core
 }
 
-func (c *Container) toServicePorts() []*corev1.ServicePort {
+// GetServicePorts returns a list of the core ServicePorts that correspond
+// to the container ports on c
+func (c *Container) GetServicePorts() []*corev1.ServicePort {
 	if len(c.core.Ports) > 0 {
 		prt := c.core.Ports[0]
 		return []*corev1.ServicePort{
@@ -49,22 +51,4 @@ func (c *Container) toServicePorts() []*corev1.ServicePort {
 		}
 	}
 	return nil
-}
-
-type ContainerList []*Container
-
-func (c ContainerList) toCoreList() []*corev1.Container {
-	ret := make([]*corev1.Container, len(c))
-	for i, ctr := range c {
-		ret[i] = ctr.toCore()
-	}
-	return ret
-}
-
-func (c ContainerList) toServicePorts() []*corev1.ServicePort {
-	ret := []*corev1.ServicePort{}
-	for _, ctr := range c {
-		ret = append(ret, ctr.toServicePorts()...)
-	}
-	return ret
 }

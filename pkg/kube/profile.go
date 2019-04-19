@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/arschles/athens-azure/pkg/kube/resources"
 	"github.com/ericchiang/k8s"
 	"github.com/souz9/errlist"
 )
@@ -27,7 +28,7 @@ type Profile interface {
 	Setup(context.Context, *k8s.Client, ErrorStrategy) error
 	// AllResources returns all the Kubernetes resources in this profile, in the
 	// order they're stored
-	AllResources() []Resource
+	AllResources() []resources.Resource
 	Install(context.Context, *k8s.Client, ErrorStrategy) error
 	// Uninstall calls Delete on all resources in the profile, in reverse order
 	Uninstall(context.Context, *k8s.Client, ErrorStrategy) error
@@ -41,7 +42,7 @@ type Profile interface {
 }
 
 type profile struct {
-	resources []Resource
+	resources []resources.Resource
 	fmt.Stringer
 }
 
@@ -145,7 +146,7 @@ func (p *profile) String() string {
 	return strings.Join(strs, "\n")
 }
 
-func (p *profile) AllResources() []Resource {
+func (p *profile) AllResources() []resources.Resource {
 	return p.resources
 }
 

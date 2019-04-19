@@ -1,4 +1,4 @@
-package kube
+package resources
 
 func emptyMap() map[string]string {
 	return make(map[string]string)

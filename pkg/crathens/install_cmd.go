@@ -3,6 +3,7 @@ package crathens
 import (
 	"github.com/arschles/athens-azure/pkg/env"
 	"github.com/arschles/athens-azure/pkg/kube"
+	"github.com/arschles/athens-azure/pkg/kube/resources"
 
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/spf13/cobra"
@@ -22,8 +23,8 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 			return err
 		}
 
-		jobContainer := kube.NewContainer("crathens", img, 0)
-		job := crathensJob(kube.ContainerList{jobContainer})
+		jobContainer := resources.NewContainer("crathens", img, 0)
+		job := crathensJob(resources.ContainerList{jobContainer})
 		jobProfile := kube.NewLongRunningBatchProfile(job)
 
 		ctx.Infof("Setting up and installing profile %s", jobProfile)

@@ -1,4 +1,4 @@
-package kube
+package resources
 
 import (
 	"github.com/ericchiang/k8s"
