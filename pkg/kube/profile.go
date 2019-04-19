@@ -181,16 +181,6 @@ func SetupAndInstallProfile(
 	return nil
 }
 
-// ErrorStrategy is the strategy that a profile takes when installing,
-// uninstalling, and updating resources
-type ErrorStrategy string
-
-const (
-	ErrorStrategyStop     ErrorStrategy = "stop"
-	ErrorStrategyRollback ErrorStrategy = "rollback"
-	ErrorStrategyContinue ErrorStrategy = "continue"
-)
-
 func chWait(ctx context.Context, ch <-chan error) error {
 	select {
 	case <-ctx.Done():
