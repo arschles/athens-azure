@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/arschles/athens-azure/pkg/kube/resources"
 	"github.com/ericchiang/k8s"
 	"github.com/souz9/errlist"
 )
@@ -40,9 +41,62 @@ func (p *ProfileComposer) Setup(
 	cl *k8s.Client,
 	strat ErrorStrategy,
 ) error {
+	if err := forEachProfile(p.profiles, strat, func(pr Profile) error {
+		return pr.Update(ctx, cl, strat)
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// AllResources implements Profile. Since profiles themselves have resource
+// lists, this function flattens each of the lists into one list, in the
+// order of each list, and then in the order of the profiles in p
+func (p *ProfileComposer) AllResources() []resources.Resource {
+	ret := []resources.Resource{}
+	for _, prof := range p.profiles {
+		resources := prof.AllResources()
+		ret = append(ret, resources...)
+	}
+	return ret
+}
+
+// Install implements Profile
+func (p *ProfileComposer) Install(
+	ctx context.Context,
+	cl *k8s.Client,
+	strat ErrorStrategy,
+) error {
+	if err := forEachProfile(p.profiles, strat, func(pr Profile) error {
+		return pr.Install(ctx, cl, strat)
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Uninstall implements Profile
+func (p *ProfileComposer) Uninstall(
+	ctx context.Context,
+	cl *k8s.Client,
+	strat ErrorStrategy,
+) error {
+	if err := forEachProfile(p.profiles, strat, func(pr Profile) error {
+		return pr.Uninstall(ctx, cl, strat)
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func forEachProfile(
+	profs []Profile,
+	strat ErrorStrategy,
+	fn func(p Profile) error,
+) error {
 	errs := []error{}
-	for _, pr := range p.profiles {
-		if err := pr.Update(ctx, cl, strat); err != nil {
+	for _, prof := range profs {
+		if err := fn(prof); err != nil {
 			// TODO: error strategy
 			errs = append(errs, err)
 		}
