@@ -10,11 +10,6 @@ import (
 )
 
 type Namespace struct {
-	Installer
-	ReadyWatcher
-	DeletedWatcher
-	Namer
-	Typer
 	core *corev1.Namespace
 }
 
@@ -49,14 +44,14 @@ func (n *Namespace) Install(ctx context.Context, cl *k8s.Client) error {
 	return errors.WithStack(err)
 }
 
-func (n *Namespace) ReadyCh() <-chan error {
+func (n *Namespace) ReadyCh(context.Context, *k8s.Client) <-chan error {
 	// TODO
 	ret := make(chan error)
 	close(ret)
 	return ret
 }
 
-func (n *Namespace) DeletedCh() <-chan error {
+func (n *Namespace) DeletedCh(context.Context, *k8s.Client) <-chan error {
 	// TODO
 	ret := make(chan error)
 	close(ret)
