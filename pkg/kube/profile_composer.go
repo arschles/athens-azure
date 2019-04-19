@@ -104,7 +104,7 @@ func (p *ProfileComposer) Uninstall(
 func forEachProfile(
 	profs []Profile,
 	strat ErrorStrategy,
-	fn func(p Profile) error,
+	fn func(Profile) error,
 ) error {
 	return forEachProfileIdx(profs, strat, func(_ int, pr Profile) error {
 		return fn(pr)
@@ -114,7 +114,7 @@ func forEachProfile(
 func forEachProfileIdx(
 	profs []Profile,
 	strat ErrorStrategy,
-	fn func(i int, p Profile) error,
+	fn func(int, Profile) error,
 ) error {
 	errs := []error{}
 	for i, prof := range profs {
