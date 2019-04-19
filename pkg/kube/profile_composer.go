@@ -29,8 +29,15 @@ func NewProfileComposer(profiles []Profile) *ProfileComposer {
 // String implements fmt.Stringer
 func (p *ProfileComposer) String() string {
 	ret := make([]string, len(p.profiles))
-	for i, pr := range p.profiles {
-		ret[i] = fmt.Sprintf("-----\nProfile #%d\n%s", i, pr.String())
+	if err := forEachProfileIdx(
+		p.profiles,
+		ErrorStrategyStop,
+		func(i int, pr Profile) error {
+			ret = append(ret, fmt.Sprintf("-----\nProfile #%d\n%s", i, pr.String()))
+			return nil
+		}); err != nil {
+
+		return ""
 	}
 	return strings.Join(ret, "\n")
 }
@@ -54,9 +61,14 @@ func (p *ProfileComposer) Setup(
 // order of each list, and then in the order of the profiles in p
 func (p *ProfileComposer) AllResources() []resources.Resource {
 	ret := []resources.Resource{}
-	for _, prof := range p.profiles {
-		resources := prof.AllResources()
+	if err := forEachProfile(p.profiles, ErrorStrategyStop, func(pr Profile) error {
+		resources := pr.AllResources()
 		ret = append(ret, resources...)
+		return nil
+	}); err != nil {
+		// there won't be an error, because we always return nil in the closure
+		// passed to forEachProfile
+		return nil
 	}
 	return ret
 }
@@ -94,9 +106,19 @@ func forEachProfile(
 	strat ErrorStrategy,
 	fn func(p Profile) error,
 ) error {
+	return forEachProfileIdx(profs, strat, func(_ int, pr Profile) error {
+		return fn(pr)
+	})
+}
+
+func forEachProfileIdx(
+	profs []Profile,
+	strat ErrorStrategy,
+	fn func(i int, p Profile) error,
+) error {
 	errs := []error{}
-	for _, prof := range profs {
-		if err := fn(prof); err != nil {
+	for i, prof := range profs {
+		if err := fn(i, prof); err != nil {
 			// TODO: error strategy
 			errs = append(errs, err)
 		}
