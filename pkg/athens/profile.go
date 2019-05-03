@@ -1,38 +1,38 @@
 package athens
 
 import (
+	"github.com/arschles/athens-azure/pkg/conf"
 	"github.com/arschles/athens-azure/pkg/kube"
 	"github.com/arschles/athens-azure/pkg/kube/resources"
 )
 
-func newProfile(imgs *images) kube.Profile {
-	athensContainers := containerList(athensName, imgs.athens)
-	athensProfile := kube.NewWebServerProfile(
-		athensName,
-		athensNS,
-		"", // TODO: make sure ingresses don't set up a host if this is empty
-		3,
-		athensContainers,
-	)
-	crathensContainers := containerList(crathensName, imgs.crathens)
-	crathensProfile := kube.NewLongRunningBatchProfile(
-		crathensName,
-		crathensNS,
-		crathensContainers,
-	)
+func newProfile(webConfs []conf.Web, jobConfs []conf.Job) kube.Profile {
+	profiles := []kube.Profile{}
+	for _, webConf := range webConfs {
+		containers := containerList(webConf.Name, webConf.Image, webConf.Port)
+		profile := kube.NewWebServerProfile(
+			webConf.Name,
+			webConf.Name,
+			"", // TODO: make sure ingresses don't set up a host if this is empty
+			webConf.Replicas,
+			containers,
+		)
+		profiles = append(profiles, profile)
+	}
 
-	lathensContainers := containerList(lathensName, imgs.lathens)
-	lathensProfile := kube.NewWebServerProfile(
-		lathensName,
-		lathensNS,
-		"athens.azurefd.net",
-		3,
-		lathensContainers,
-	)
-	return kube.NewComposedProfile(athensProfile, crathensProfile, lathensProfile)
+	for _, jobConf := range jobConfs {
+		containers := containerList(jobConf.Name, jobConf.Image, -1)
+		profile := kube.NewLongRunningBatchProfile(
+			jobConf.Name,
+			jobConf.Name,
+			containers,
+		)
+		profiles = append(profiles, profile)
+	}
+	return kube.NewComposedProfile(profiles...)
 }
 
-func containerList(name, img string) resources.ContainerList {
+func containerList(name, img string, port int32) resources.ContainerList {
 	return resources.ContainerList{
 		resources.NewContainer(name, img, 3000),
 	}

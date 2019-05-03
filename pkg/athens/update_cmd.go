@@ -2,6 +2,7 @@ package athens
 
 import (
 	"github.com/arschles/athens-azure/pkg/cmd"
+	"github.com/arschles/athens-azure/pkg/conf"
 	"github.com/arschles/athens-azure/pkg/kube"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -9,9 +10,8 @@ import (
 
 func updateCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("update", "Upgrade the Athens image (WIP)")
-	flags := ret.PersistentFlags()
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
-		imgs, err := getImages(flags, ret.MarkFlagRequired)
+		cfg, err := conf.Athens()
 		if err != nil {
 			return err
 		}
@@ -19,7 +19,7 @@ func updateCmd(ctx cmd.Context) *cobra.Command {
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		profile := newProfile(imgs)
+		profile := newProfile(cfg.Webs, cfg.Jobs)
 		if err := profile.Update(ctx, cl, kube.ErrorStrategyContinue); err != nil {
 			return err
 		}

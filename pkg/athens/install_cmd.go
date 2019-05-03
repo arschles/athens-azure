@@ -2,6 +2,7 @@ package athens
 
 import (
 	"github.com/arschles/athens-azure/pkg/cmd"
+	"github.com/arschles/athens-azure/pkg/conf"
 	"github.com/arschles/athens-azure/pkg/kube"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 	flags.BoolVar(&dryRun, "dryrun", false, "Do a dry run, and don't modify any Kubernetes resources")
 
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
-		imgs, err := getImages(flags, ret.MarkFlagRequired)
+		cfg, err := conf.Athens()
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -23,7 +24,7 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 			return errors.WithStack(err)
 		}
 
-		profile := newProfile(imgs)
+		profile := newProfile(cfg.Webs, cfg.Jobs)
 		if ctx.IsDebug() {
 			ctx.Debugf("Here are the resources that are going to be installed:")
 			resources := profile.AllResources()
