@@ -1,5 +1,11 @@
 package kube
 
+import (
+	"github.com/arschles/athens-azure/pkg/kube/resources"
+	"github.com/pkg/errors"
+	"github.com/souz9/errlist"
+)
+
 func forEachResource(
 	res []resources.Resource,
 	strat ErrorStrategy,
