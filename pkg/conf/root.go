@@ -1,5 +1,7 @@
 package conf
 
+import "fmt"
+
 // web {
 //     domain = "my.domain"
 //     // optional, defaults to 3
@@ -25,6 +27,8 @@ package conf
 
 // Root is the root of all configuration
 type Root struct {
+	fmt.Stringer
+	Name string
 	Webs []Web `json:"web"`
 	Jobs []Job `json:"job"`
 }
@@ -45,4 +49,13 @@ func (r *Root) WebImages() []string {
 		ret[i] = web.Image
 	}
 	return ret
+}
+
+func (r *Root) String() string {
+	return fmt.Sprintf(
+		"App %s with %d webs and %d jobs",
+		r.Name,
+		len(r.Webs),
+		len(r.Jobs),
+	)
 }

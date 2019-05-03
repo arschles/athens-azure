@@ -5,6 +5,7 @@ package conf
 // TODO: build a decoder from HCL and put this into an HCL file!
 func Athens() (*Root, error) {
 	return &Root{
+		Name: "athens",
 		Webs: []Web{athensWeb(), lathensWeb()},
 		Jobs: []Job{crathensJob()},
 	}, nil
