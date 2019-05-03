@@ -21,8 +21,9 @@ func Root() *cobra.Command {
 	var debug bool
 	flags := root.PersistentFlags()
 	flags.BoolVarP(&debug, "debug", "d", false, "Turn on debug logging")
-	c := context.Background()
-	ctx := cmd.NewContext(c, debug)
+	ctx := cmd.NewContext(context.Background(), func() bool {
+		return debug
+	})
 
 	root.AddCommand(chartmuseum.Root(ctx))
 	root.AddCommand(censusai.Root(ctx))
