@@ -7,6 +7,7 @@ import (
 
 	"github.com/arschles/athens-azure/pkg/kube/resources"
 	"github.com/ericchiang/k8s"
+	"github.com/pkg/errors"
 	"github.com/souz9/errlist"
 )
 
@@ -153,10 +154,10 @@ func SetupAndInstallProfile(
 ) error {
 	// TODO: error strategy
 	if err := pr.Setup(ctx, cl, strat); err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	if err := pr.Install(ctx, cl, strat); err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	return nil
 }
