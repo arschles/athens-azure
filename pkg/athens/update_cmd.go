@@ -9,8 +9,9 @@ import (
 
 func updateCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("update", "Upgrade the Athens image (WIP)")
+	flags := ret.PersistentFlags()
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
-		imgs, err := getImages(args)
+		imgs, err := getImages(flags, ret.MarkFlagRequired)
 		if err != nil {
 			return err
 		}

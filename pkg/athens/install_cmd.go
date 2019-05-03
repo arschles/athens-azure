@@ -9,11 +9,12 @@ import (
 
 func installCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("install", "Install Athens")
+	flags := ret.PersistentFlags()
 	var dryRun bool
-	ret.PersistentFlags().BoolVar(&dryRun, "dryrun", false, "Do a dry run, and don't modify any Kubernetes resources")
+	flags.BoolVar(&dryRun, "dryrun", false, "Do a dry run, and don't modify any Kubernetes resources")
 
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
-		imgs, err := getImages(args)
+		imgs, err := getImages(flags, ret.MarkFlagRequired)
 		if err != nil {
 			return errors.WithStack(err)
 		}

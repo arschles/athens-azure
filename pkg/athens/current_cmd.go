@@ -9,9 +9,9 @@ import (
 
 func currentCmd(ctx cmd.Context) *cobra.Command {
 	ret := cmd.Skeleton("current", "Get the current state of the running Athens")
-
+	flags := ret.PersistentFlags()
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
-		imgs, err := getImages(args)
+		imgs, err := getImages(flags, ret.MarkFlagRequired)
 		if err != nil {
 			return err
 		}
