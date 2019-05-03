@@ -33,7 +33,7 @@ func (n *Namespace) Type() string {
 func (n *Namespace) Install(ctx context.Context, cl *k8s.Client) error {
 	err := cl.Create(ctx, n.core)
 	if apiErr := errToAPIErr(err); apiErr != nil {
-		// 201 CREATED and 409 CONFLICT means it's already there
+		// 201 CREATED or 409 CONFLICT means it's already there
 		if apiErr.Code != http.StatusCreated &&
 			apiErr.Code != http.StatusConflict {
 			return apiErr
