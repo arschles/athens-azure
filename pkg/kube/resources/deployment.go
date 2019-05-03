@@ -17,15 +17,28 @@ type Deployment struct {
 	// Note: Deployments implement Resource, but don't embed it here
 	// because the compiler will not give errors if you don't implement
 	// a method in Resource when you put it into a profile
+	updaters []DeploymentFieldUpdater
 }
 
-// NewDeployment creates a new deployment with sensible defaults
+// NewDeployment creates a new deployment with sensible defaults.
+//
+// You can pass in a bunch of deployment updaters that the update function
+// will apply - in order - before submitting the new, updated, deployment
+// back to the Kubernetes server. This list is how you can customize
+// what is allowed to be updated in the deployment.
+//
+// If you pass nil for this list, a sensible default will be used
 func NewDeployment(
 	name,
 	ns string,
 	selectorLabels map[string]string,
 	containers ContainerList,
+	deploymentUpdaters []DeploymentFieldUpdater,
 ) *Deployment {
+	updaters := deploymentUpdaters
+	if updaters == nil {
+		updaters = []DeploymentFieldUpdater{NewContainerFieldUpdater()}
+	}
 	return &Deployment{
 		core: &appsv1.Deployment{
 			Metadata: objectMetaWithLabels(name, ns, selectorLabels),
@@ -104,15 +117,16 @@ func (d *Deployment) Install(ctx context.Context, cl *k8s.Client) error {
 
 // Update is the implementation of Updater
 func (d *Deployment) Update(ctx context.Context, cl *k8s.Client) error {
-	// user should be only able to update:
-	//
-	// - replicas
-	// - name
-	// - image
-	// - env
-	// - healthy HTTP path
-	// - ready HTTP path
-	// - port
+	// get the original deployment
+	oldDepl := *d
+	newDepl := *d
+	if err := oldDepl.Get(ctx, cl, d.Name(), d.Namespace().Name()); err != nil {
+		return err
+	}
+	for _, updater := range d.updaters {
+		oldDepl = newDepl
+		newDepl = *updater.Update(&oldDepl, &newDepl)
+	}
 
 	return nil
 }

@@ -32,7 +32,9 @@ func NewWebServerProfile(
 	// set up the deployment
 	depl := resources.NewDeployment(name, ns, map[string]string{
 		"app": name,
-	}, containers)
+	}, containers, []resources.DeploymentFieldUpdater{
+		resources.NewContainerFieldUpdater(),
+	})
 
 	depl = depl.WithReplicas(replicas)
 	// depl = depl.setMatchLabels(map[string]string{
