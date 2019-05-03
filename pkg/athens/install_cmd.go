@@ -4,7 +4,6 @@ import (
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/arschles/athens-azure/pkg/conf"
 	"github.com/arschles/athens-azure/pkg/kube"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -17,11 +16,11 @@ func installCmd(ctx cmd.Context) *cobra.Command {
 	ret.RunE = func(cmd *cobra.Command, args []string) error {
 		cfg, err := conf.Athens()
 		if err != nil {
-			return errors.WithStack(err)
+			return err
 		}
 		cl, err := kube.LoadClientFromDiskKubeConfig()
 		if err != nil {
-			return errors.WithStack(err)
+			return err
 		}
 
 		profile := newProfile(cfg.Webs, cfg.Jobs)

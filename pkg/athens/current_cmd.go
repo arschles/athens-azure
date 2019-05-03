@@ -4,7 +4,6 @@ import (
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/arschles/athens-azure/pkg/conf"
 	"github.com/arschles/athens-azure/pkg/kube"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +18,7 @@ func currentCmd(ctx cmd.Context) *cobra.Command {
 		ctx.Debugf("Looking for job images: %s", cfg.JobImages())
 		cl, err := kube.LoadClientFromDiskKubeConfig()
 		if err != nil {
-			return errors.WithStack(err)
+			return err
 		}
 		prof := newProfile(cfg.Webs, cfg.Jobs)
 		if err := prof.Status(ctx, cl); err != nil {

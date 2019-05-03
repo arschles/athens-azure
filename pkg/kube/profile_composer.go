@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/arschles/athens-azure/pkg/errlist"
 	"github.com/arschles/athens-azure/pkg/kube/resources"
 	"github.com/ericchiang/k8s"
-	"github.com/souz9/errlist"
 )
 
 // ProfileComposer is a Profile implementation that composes multiple profiles

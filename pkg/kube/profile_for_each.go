@@ -1,9 +1,8 @@
 package kube
 
 import (
+	"github.com/arschles/athens-azure/pkg/errlist"
 	"github.com/arschles/athens-azure/pkg/kube/resources"
-	"github.com/pkg/errors"
-	"github.com/souz9/errlist"
 )
 
 func forEachResource(
@@ -29,7 +28,7 @@ func forEachResourceIdx(
 		}
 	}
 	if len(errs) > 0 {
-		return errors.WithStack(errlist.Error(errs))
+		return errlist.Error(errs)
 	}
 	return nil
 }
@@ -48,7 +47,7 @@ func forEachResourceReverse(
 		}
 	}
 	if len(errs) > 0 {
-		return errors.WithStack(errlist.Error(errs))
+		return errlist.Error(errs)
 	}
 	return nil
 }

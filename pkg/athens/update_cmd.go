@@ -4,7 +4,6 @@ import (
 	"github.com/arschles/athens-azure/pkg/cmd"
 	"github.com/arschles/athens-azure/pkg/conf"
 	"github.com/arschles/athens-azure/pkg/kube"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +16,7 @@ func updateCmd(ctx cmd.Context) *cobra.Command {
 		}
 		cl, err := kube.LoadClientFromDiskKubeConfig()
 		if err != nil {
-			return errors.WithStack(err)
+			return err
 		}
 		profile := newProfile(cfg.Webs, cfg.Jobs)
 		if err := profile.Update(ctx, cl, kube.ErrorStrategyContinue); err != nil {

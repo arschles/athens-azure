@@ -6,7 +6,6 @@ import (
 
 	"github.com/ericchiang/k8s"
 	corev1 "github.com/ericchiang/k8s/apis/core/v1"
-	"github.com/pkg/errors"
 )
 
 type Namespace struct {
@@ -37,11 +36,11 @@ func (n *Namespace) Install(ctx context.Context, cl *k8s.Client) error {
 		// 201 CREATED and 409 CONFLICT means it's already there
 		if apiErr.Code != http.StatusCreated &&
 			apiErr.Code != http.StatusConflict {
-			return errors.WithStack(apiErr)
+			return apiErr
 		}
 		return nil
 	}
-	return errors.WithStack(err)
+	return err
 }
 
 func (n *Namespace) ReadyCh(context.Context, *k8s.Client) <-chan error {

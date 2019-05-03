@@ -7,7 +7,6 @@ import (
 
 	"github.com/arschles/athens-azure/pkg/kube/resources"
 	"github.com/ericchiang/k8s"
-	"github.com/pkg/errors"
 )
 
 // Profile is a group of kubernetes resources that make up a specific kind of
@@ -153,10 +152,10 @@ func SetupAndInstallProfile(
 ) error {
 	// TODO: error strategy
 	if err := pr.Setup(ctx, cl, strat); err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 	if err := pr.Install(ctx, cl, strat); err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 	return nil
 }
