@@ -197,7 +197,7 @@ func forEachResourceIdx(
 		}
 	}
 	if len(errs) > 0 {
-		return errlist.Error(errs)
+		return errors.WithStack(errlist.Error(errs))
 	}
 	return nil
 }
@@ -216,7 +216,7 @@ func forEachResourceReverse(
 		}
 	}
 	if len(errs) > 0 {
-		return errlist.Error(errs)
+		return errors.WithStack(errlist.Error(errs))
 	}
 	return nil
 }
