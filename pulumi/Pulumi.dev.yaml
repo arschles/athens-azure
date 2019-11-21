@@ -1,0 +1,3 @@
+config:
+  athens-pulumi:isMinikube: "false"
+  azure:environment: public

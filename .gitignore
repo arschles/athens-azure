@@ -14,3 +14,5 @@
 resource.db
 flanders
 !flanders/
+bin/
+node_modules/
