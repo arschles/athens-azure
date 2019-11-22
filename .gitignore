@@ -17,3 +17,4 @@ flanders
 bin/
 node_modules/
 .DS_Store
+tf/.terraform
