@@ -1,0 +1,17 @@
+name: Terraform
+on: [push]
+jobs:
+  terraform:
+    name: Terraform Checks
+    runs-on: ubuntu-latest
+    steps:
+    - name: Format
+      uses: rojopolis/terraform-action@0.0.4
+      with:
+          # Terraform command to run (e.g fmt|validate|init|plan|apply)
+        command: fmt
+        # Look in directories matching this pattern for Terraform configs.
+        pattern: ./tf
+        # For `plan` write plan to this file.
+        planfile: ./tf/planfile
+        version: v0.12.16
