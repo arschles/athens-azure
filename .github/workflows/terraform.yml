@@ -23,7 +23,7 @@ jobs:
         tf_actions_comment: true
     - name: Setup KubeConfig
       run: |
-        mkdir $HOME/.kube
+        mkdir tf/.kube
         echo $KUBECONFIG > tf/.kube/config
     - name: Plan
       uses: hashicorp/terraform-github-actions@master
