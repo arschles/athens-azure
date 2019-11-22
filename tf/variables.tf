@@ -15,3 +15,8 @@ variable "namespace" {
   description = "The namespace to put the Athens server & friends in"
   default     = "athens-server"
 }
+
+variable "kubeconfig-path" {
+  type = string
+  description = "The path to the Kube config file"
+}
