@@ -17,6 +17,6 @@ variable "namespace" {
 }
 
 variable "kubeconfig-path" {
-  type = string
+  type        = string
   description = "The path to the Kube config file"
 }
