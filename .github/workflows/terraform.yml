@@ -1,17 +1,16 @@
 name: Terraform
-on: [push]
+on: [push, pull_request]
 jobs:
   terraform:
     name: Terraform Checks
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@master
     - name: Format
-      uses: rojopolis/terraform-action@0.0.4
+      uses: hashicorp/terraform-github-actions@master
       with:
-          # Terraform command to run (e.g fmt|validate|init|plan|apply)
-        command: fmt
-        # Look in directories matching this pattern for Terraform configs.
-        pattern: ./tf
-        # For `plan` write plan to this file.
-        planfile: ./tf/planfile
-        version: v0.12.16
+        tf_actions_version: 0.12.16
+        tf_actions_subcommand: 'fmt'
+        tf_actions_working_dir: '.'
+        tf_actions_comment: true
