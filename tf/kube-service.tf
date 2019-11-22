@@ -5,8 +5,8 @@ resource "kubernetes_service" "athens" {
   }
   spec {
     selector = {
-      kind = "httpserver"
       app  = "athens"
+      kind = "httpserver"
       #  TODO: make this come from the deployment. For example:
       # ${kubernetes_deployment.athens-server.spec.template.metadata.labels.app}
     }
