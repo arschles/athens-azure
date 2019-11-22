@@ -16,9 +16,7 @@ jobs:
         tf_actions_comment: true
     - name: Setup KubeConfig
       uses: docker://ubuntu:18.04
-      runs: |
-        mkdir $HOME/.kube
-        echo $KUBECONFIG > $HOME/.kube/config
+      runs: "mkdir $HOME/.kube && echo $KUBECONFIG > $HOME/.kube/config"
     - name: Plan
       uses: hashicorp/terraform-github-actions@master
       with:
