@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "athens-azurefd" {
+resource "kubernetes_namespace" "athens-namespace" {
   metadata {
     name = var.namespace
   }
