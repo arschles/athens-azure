@@ -20,7 +20,7 @@ jobs:
     - name: Build crathens docker container
       run: |
         echo ${DOCKER_HUB_PASSWORD} | docker login --username=${DOCKER_HUB_USERNAME} --password-stdin
-        make lathens-docker-push
+        make crathens-docker-push
       env:
         DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
         DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
