@@ -1,7 +1,7 @@
 ARG GOLANG_VERSION=1.13
 FROM golang:${GOLANG_VERSION}-alpine AS builder
 
-WORKDIR $GOPATH/src/github.com/gomods/athens
+WORKDIR /lathens
 
 COPY . .
 
