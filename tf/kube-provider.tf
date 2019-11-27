@@ -1,5 +1,25 @@
+variable "kube-host" {
+  type = string
+  description = "The kubernetes API server hostname"
+}
+variable "kube-cluster-ca" {
+  type = string
+  description = "The cluster certificate authority"
+}
+
+variable "kube-client-cert" {
+  type = string
+  description = "The certificate to use for Kubernetes"
+}
+
+variable "kube-client-key" {
+  type = string
+  description = "The private key to use for Kubernetes"
+}
+
 provider "kubernetes" {
-  config_path              = var.kubeconfig-path
-  config_context_auth_info = var.kube-auth
-  config_context_cluster   = var.kube-cluster
+  host = var.kube-host
+  client_certificate = var.kube-client-cert
+  client_key = var.kube-client-key
+  cluster_ca_certificate = var.kube-cluster-ca
 }

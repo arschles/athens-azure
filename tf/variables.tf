@@ -16,11 +16,6 @@ variable "namespace" {
   default     = "athens-server"
 }
 
-variable "kubeconfig-path" {
-  type        = string
-  description = "The path to the Kube config file"
-  default = "~/.kube/config"
-}
 
 variable "server-replicas" {
   type = string
