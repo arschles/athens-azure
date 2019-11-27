@@ -9,11 +9,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
     
-      - name: Setup Terraform RC
+    - name: Setup Terraform RC
       run: |
         echo $TERRAFORM_RC > $HOME/.terraformrc
     
-        - name: Terraform init
+    - name: Terraform init
       uses: hashicorp/terraform-github-actions@master
       with:
         tf_actions_version: 0.12.16
