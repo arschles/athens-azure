@@ -18,4 +18,7 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Build and push lathens docker container
-      run: make lathens-docker-push
+      run: |
+        # TODO: figure out login
+        # docker login --username=${DOCKER_HUB_USERNAME} --password=${DOCKER_HUB_PASSWORD}
+        make lathens-docker-build
