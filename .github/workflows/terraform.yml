@@ -21,10 +21,9 @@ jobs:
         tf_actions_subcommand: 'fmt'
         tf_actions_working_dir: 'tf'
         tf_actions_comment: true
-    - name: Setup KubeConfig
+    - name: Setup Terraform RC
       run: |
-        mkdir tf/.kube
-        echo $KUBECONFIG > tf/.kube/config
+        echo $TERRAFORM_RC > $HOME/.terraformrc
     - name: Plan
       uses: hashicorp/terraform-github-actions@master
       with:

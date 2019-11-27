@@ -22,4 +22,5 @@ provider "kubernetes" {
   client_certificate = var.kube-client-cert
   client_key = var.kube-client-key
   cluster_ca_certificate = var.kube-cluster-ca
+  version = "~> 1.10"
 }
