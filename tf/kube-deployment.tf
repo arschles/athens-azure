@@ -8,7 +8,7 @@ resource "kubernetes_deployment" "athens-server" {
     }
   }
   spec {
-    replicas = 5
+    replicas = var.server-replicas
     selector {
       match_labels = {
         kind = "httpserver"
