@@ -23,17 +23,37 @@ build-flanders:
 install-flanders:
 	go install ./cmd/flanders
 
-# ----
+#####
 # lathens
-####
+#####
 LATHENS_DOCKER_TAG?=${GIT_SHA}
 LATHENS_DOCKER_IMAGE=arschles/lathens:${LATHENS_DOCKER_TAG}
 .PHONY: lathens
 lathens:
 	go build -o bin/lathens ./lathens
 
+.PHONY: lathens-docker-build
 lathens-docker-build:
 	docker build -t ${LATHENS_DOCKER_IMAGE} -f Dockerfile.lathens .
 
+.PHONY: lathens-docker-push
 lathens-docker-push: lathens-docker-build
 	docker push ${LATHENS_DOCKER_IMAGE}
+
+#####
+# crathens
+#####
+CRATHENS_DOCKER_TAG?=${GIT_SHA}
+CRATHENS_DOCKER_IMAGE=arschles/crathens:${CRATHENS_DOCKER_TAG}
+
+.PHONY: crathens
+crathens:
+	go build -o bin/crathens ./crathens
+
+.PHONY: crathens-docker-build
+crathens-docker-build:
+	docker build -t ${CRATHENS_DOCKER_IMAGE} -f Dockerfile.crathens .
+
+.PHONY: crathens-docker-push
+crathens-docker-push: crathens-docker-build
+	docker push ${CRATHENS_DOCKER_IMAGE}
