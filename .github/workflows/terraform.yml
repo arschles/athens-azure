@@ -11,7 +11,7 @@ jobs:
     
     - name: Setup Terraform RC
       run: |
-        echo $TERRAFORM_RC > $HOME/.terraformrc
+        echo ${{ secrets.$TERRAFORM_RC }} > $HOME/.terraformrc
     
     - name: Terraform init
       uses: hashicorp/terraform-github-actions@master
