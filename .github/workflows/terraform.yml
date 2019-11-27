@@ -33,5 +33,5 @@ jobs:
         tf_actions_working_dir: 'tf'
         tf_actions_comment: true
       env:
-        TF_VAR_kubeconfig-path: .kube/config
+        TF_VAR_kubeconfig-path: tf/kube/config
 
