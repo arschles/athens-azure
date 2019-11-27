@@ -1,6 +1,7 @@
 resource "kubernetes_cron_job" "crathens" {
   metadata {
     name = "crathens"
+    namespace = var.namespace
   }
   spec {
     concurrency_policy            = "Replace"
