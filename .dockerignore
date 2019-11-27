@@ -1,0 +1,8 @@
+bin
+tf
+pulumi
+charts
+.github
+.vscode
+.envrc
+.gitignore
