@@ -19,9 +19,8 @@ jobs:
 
     - name: Build crathens docker container
       run: |
-        # TODO: figure out login
-        # docker login --username=${DOCKER_HUB_USERNAME} --password=${DOCKER_HUB_PASSWORD}
-        make crathens-docker-build
+        echo ${DOCKER_HUB_PASSWORD} | docker login --username=${DOCKER_HUB_USERNAME} --password-stdin
+        make lathens-docker-build
       env:
         DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-        DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
