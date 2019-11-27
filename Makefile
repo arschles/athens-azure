@@ -60,7 +60,3 @@ crathens-docker-build:
 .PHONY: crathens-docker-push
 crathens-docker-push: crathens-docker-build
 	docker push ${CRATHENS_DOCKER_IMAGE}
-
-.PHONY: auto-tfvars
-auto-tfvars:
-	@echo "lathens-image-tag = \"${LATHENS_DOCKER_TAG}\"" > tf/tags.auto.tfvars
