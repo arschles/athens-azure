@@ -5,9 +5,11 @@ AZURE_ATHENS_DNS_NAME ?= athens
 
 GIT_SHA?=$(shell git rev-parse --short HEAD)
 
+.PHONY: git-sha
 git-sha:
 	@echo ${GIT_SHA}
 
+##### THIS IS DEPRECATED
 deploy:
 	AZURE_ATHENS_RESOURCE_GROUP=${AZURE_ATHENS_RESOURCE_GROUP} \
 	AZURE_ATHENS_CONTAINER_NAME=${AZURE_ATHENS_CONTAINER_NAME} \
@@ -15,6 +17,7 @@ deploy:
 	IMAGE_TAG=${IMAGE_TAG} \
 	AZURE_ATHENS_DNS_NAME=${AZURE_ATHENS_DNS_NAME} \
 	./aci.sh
+#####
 
 build-flanders:
 	go build -o flanders ./cmd/flanders
@@ -57,3 +60,7 @@ crathens-docker-build:
 .PHONY: crathens-docker-push
 crathens-docker-push: crathens-docker-build
 	docker push ${CRATHENS_DOCKER_IMAGE}
+
+.PHONY: auto-tfvars
+auto-tfvars:
+	@echo "lathens-image-tag = ${LATHENS_DOCKER_TAG}" > tags.auto.tfvars
