@@ -31,8 +31,24 @@ resource "kubernetes_deployment" "athens-server" {
             container_port = 3000
           }
           env {
-            name  = "PORT"
+            name  = "ATHENS_PORT"
             value = ":3000"
+          }
+          env {
+            name = "ATHENS_STORAGE_TYPE"
+            value = "mongo"
+          }
+          env {
+            name = "ATHENS_MONGO_STORAGE_URL"
+            value = var.mongo-conn-string
+          }
+          env {
+             name = "ATHENS_GO_GET_WORKERS"
+             value = var.athens-go-get-workers
+          }
+          env {
+            name = "GO_ENV"
+            value = "development"
           }
         }
       }

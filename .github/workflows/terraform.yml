@@ -34,4 +34,6 @@ jobs:
         tf_actions_comment: true
       env:
         TF_VAR_kubeconfig-path: tf/kube/config
+        TF_VAR_kube-cluster: "flanders"
+        TF_VAR_kube-auth: "clusterUser_athens_flanders"
 
