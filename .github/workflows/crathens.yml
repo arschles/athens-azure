@@ -4,7 +4,7 @@ on: [push]
 jobs:
 
   build:
-    name: Push Crathens docker image
+    name: build & push crathens docker image
     runs-on: ubuntu-latest
     steps:
 
@@ -20,7 +20,7 @@ jobs:
     - name: Build crathens docker container
       run: |
         echo ${DOCKER_HUB_PASSWORD} | docker login --username=${DOCKER_HUB_USERNAME} --password-stdin
-        make lathens-docker-build
+        make lathens-docker-push
       env:
         DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
         DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
