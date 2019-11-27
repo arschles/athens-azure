@@ -38,3 +38,8 @@ variable "athens-go-get-workers" {
   description = "The number of Go processes that Athens will run in the background"
   default = "3"
 }
+
+variable "lathens-image-tag" {
+  type = string
+  description = "The tag of the lathens docker image. This is usually the Git SHA, which you can get with 'make git-sha'"
+}

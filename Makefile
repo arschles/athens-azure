@@ -5,6 +5,8 @@ AZURE_ATHENS_DNS_NAME ?= athens
 
 GIT_SHA?=$(shell git rev-parse --short HEAD)
 
+git-sha:
+	@echo ${GIT_SHA}
 
 deploy:
 	AZURE_ATHENS_RESOURCE_GROUP=${AZURE_ATHENS_RESOURCE_GROUP} \
