@@ -17,6 +17,9 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
+    - name: Run crathens tests
+      run: go test ./crathens/...
+      
     - name: Build crathens docker container
       run: |
         echo ${DOCKER_HUB_PASSWORD} | docker login --username=${DOCKER_HUB_USERNAME} --password-stdin

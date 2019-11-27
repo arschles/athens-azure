@@ -17,6 +17,9 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
+    - name: Run lathens tests
+      run: go test ./lathens/...
+      
     - name: Build and push lathens docker container
       run: |
         echo ${DOCKER_HUB_PASSWORD} | docker login --username=${DOCKER_HUB_USERNAME} --password-stdin
