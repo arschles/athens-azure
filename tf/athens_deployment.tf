@@ -51,7 +51,7 @@ resource "kubernetes_deployment" "athens-server" {
             value = "development"
           }
           env {
-            name = "ATHENS_TRACE_EXPORTER_URL"
+            name  = "ATHENS_TRACE_EXPORTER_URL"
             value = "http://localhost:55678"
           }
         }
