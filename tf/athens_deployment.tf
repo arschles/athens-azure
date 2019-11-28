@@ -54,6 +54,10 @@ resource "kubernetes_deployment" "athens-server" {
             name  = "ATHENS_TRACE_EXPORTER_URL"
             value = "http://localhost:55678"
           }
+          env {
+            name  = "ATHENS_TRACE_EXPORTER"
+            value = "jaeger"
+          }
         }
         container {
           image             = var.census-forwarder-image
