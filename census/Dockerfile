@@ -15,5 +15,6 @@ RUN chmod +x /lf/Microsoft.LocalForwarder.ConsoleHost
 
 EXPOSE 55678
 
-CMD bash -c 'cd /lf/ && ./Microsoft.LocalForwarder.ConsoleHost noninteractive'
+WORKDIR /lf
+CMD bash -c './Microsoft.LocalForwarder.ConsoleHost noninteractive'
 

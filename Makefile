@@ -60,3 +60,18 @@ crathens-docker-build:
 .PHONY: crathens-docker-push
 crathens-docker-push: crathens-docker-build
 	docker push ${CRATHENS_DOCKER_IMAGE}
+
+#####
+# OpenCensus forwarder for AppInsights
+#####
+
+CENSUS_DOCKER_TAG?=${GIT_SHA}
+CENSUS_DOCKER_IMAGE=arschles/athens-oc-forwarder:${CENSUS_DOCKER_TAG}
+
+.PHONY: census-docker-build
+census-docker-build:
+	docker build -t ${CENSUS_DOCKER_IMAGE} -f census/Dockerfile census
+
+.PHONY: census-docker-push
+census-docker-push: census-docker-build
+	docker push ${CENSUS_DOCKER_IMAGE}
