@@ -52,8 +52,8 @@ resource "kubernetes_deployment" "athens-server" {
           }
         }
         container {
-          image = var.census-forwarder-image
-          name = "census-forwarder"
+          image             = var.census-forwarder-image
+          name              = "census-forwarder"
           image_pull_policy = "IfNotPresent"
           port {
             container_port = 50001
@@ -62,7 +62,7 @@ resource "kubernetes_deployment" "athens-server" {
             container_port = 55678
           }
           env {
-            name = "APPINSIGHTS_INSTRUMENTATIONKEY"
+            name  = "APPINSIGHTS_INSTRUMENTATIONKEY"
             value = var.census-forwarder-app-key
           }
         }

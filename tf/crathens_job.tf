@@ -1,6 +1,6 @@
 resource "kubernetes_cron_job" "crathens" {
   metadata {
-    name = "crathens"
+    name      = "crathens"
     namespace = var.namespace
   }
   spec {

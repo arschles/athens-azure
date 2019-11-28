@@ -1,6 +1,6 @@
 variable "census-forwarder-image" {
-    type = string
-    description = "The Docker image name of the OpenCensus to App Insights forwarder"
+  type        = string
+  description = "The Docker image name of the OpenCensus to App Insights forwarder"
 }
 
 variable "census-forwarder-app-key" {
