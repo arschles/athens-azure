@@ -50,6 +50,10 @@ resource "kubernetes_deployment" "athens-server" {
             name  = "GO_ENV"
             value = "development"
           }
+          env {
+            name = "ATHENS_TRACE_EXPORTER_URL"
+            value = "http://localhost:55678"
+          }
         }
         container {
           image             = var.census-forwarder-image
