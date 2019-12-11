@@ -19,7 +19,7 @@ resource "kubernetes_cron_job" "crathens" {
           spec {
             container {
               name  = "crathens"
-              image = var.crathens-image-name
+              image = var.crathens_image_name
             }
             restart_policy = "OnFailure"
           }

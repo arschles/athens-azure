@@ -1,2 +1,2 @@
-server-replicas       = 10
-athens-go-get-workers = 3
+server_replicas       = 10
+athens_go_get_workers = 3

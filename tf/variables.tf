@@ -4,18 +4,18 @@ variable "namespace" {
   default     = "athens-server"
 }
 
-variable "server-replicas" {
+variable "server_replicas" {
   type        = string
   description = "The number of replicas of the Athens proxy server"
   default     = "5"
 }
 
-variable "mongo-conn-string" {
+variable "mongo_conn_string" {
   type        = string
   description = "The connection string for Athens to connect to Mongo (CosmosDB in prod)"
 }
 
-variable "athens-go-get-workers" {
+variable "athens_go_get_workers" {
   type        = string
   description = "The number of Go processes that Athens will run in the background"
   default     = "3"
