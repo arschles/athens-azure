@@ -1,8 +1,8 @@
 terraform {
   backend "azurerm" {
-    storage_account_name  = "athensci"
-    container_name        = "tstate"
-    key                   = "terraform.tfstate" 
+    storage_account_name = "athensci"
+    container_name       = "tstate"
+    key                  = "terraform.tfstate"
   }
 }
 

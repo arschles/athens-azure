@@ -1,3 +1,3 @@
-provider "azurerm"{
-    version = "~> 1.38"
+provider "azurerm" {
+  version = "~> 1.38"
 }
