@@ -1,7 +1,8 @@
 name: Terraform Deploy for PRs
 on:
   push:
-    branches-ignore: ['master']
+    branches-ignore:
+      - 'master'
 
 jobs:
 

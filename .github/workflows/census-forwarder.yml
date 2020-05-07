@@ -1,6 +1,7 @@
 name: OpenCensus to App Insights Forwarder
 on: [push]
 
+
 jobs:
 
   build:
