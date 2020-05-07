@@ -11,10 +11,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v1
 
-    - name: Build & push forwarder
-      run: |
-        echo ${DOCKER_HUB_PASSWORD} | docker login --username=${DOCKER_HUB_USERNAME} --password-stdin
-        make census-docker-push
-      env:
-        DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
+    # TODO: fix the build/push
+    # - name: Build & push forwarder
+    #   run: |
+    #     echo ${DOCKER_HUB_PASSWORD} | docker login --username=${DOCKER_HUB_USERNAME} --password-stdin
+    #     make census-docker-push
+    #   env:
+    #     DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+    #     DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_TOKEN }}
