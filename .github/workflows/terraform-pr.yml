@@ -13,25 +13,25 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
     
+    - name: Setup Terraform
+      run: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.12.16
+        terraform_wrapper: false
+
     - name: Setup Terraform RC
       run: echo "$TERRAFORM_RC" > ./.terraformrc
       env:
         TERRAFORM_RC: ${{ secrets.TERRAFORM_RC }}
-
+    
     - name: Format
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.12.16
-        tf_actions_subcommand: 'fmt'
-        tf_actions_working_dir: 'tf'
-        tf_actions_comment: true
+      run: terraform fmt tf
+    
+    - name: Init
+      run: terraform init tf
+
     - name: Deploy to staging
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.12.16
-        tf_actions_subcommand: 'apply'
-        tf_actions_working_dir: 'tf'
-        tf_actions_comment: true
+      run: terraform apply tf
       env:
         TF_IN_AUTOMATION: true
         TF_kube_host: ${{ secrets.STAGING_KUBE_HOST }}
