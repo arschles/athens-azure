@@ -40,7 +40,7 @@ jobs:
         TF_kube_client_key: ${{ secrets.STAGING_KUBE_CLIENT_KEY }}
         TF_namespace: ${GITHUB_REF}
         TF_server_replicas: 1
-        TF_mongo_conn_string: ${{ STAGING_MONGO_CONN_STRING }}
+        TF_mongo_conn_string: ${{ secrets.STAGING_MONGO_CONN_STRING }}
         TF_athens_go_get_workers: 3
         TF_census_forwarder_image: TODO
         TF_census_forwarder_app_key: ${{ secrets.STAGING_CENSUS_FORWARDER_APP_KEY }}
