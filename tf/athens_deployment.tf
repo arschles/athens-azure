@@ -1,4 +1,4 @@
-resource "kubernetes_deployment" "athens-server" {
+resource "kubernetes_deployment" "athens" {
   metadata {
     name      = "athens-server"
     namespace = var.namespace
@@ -8,7 +8,7 @@ resource "kubernetes_deployment" "athens-server" {
     }
   }
   spec {
-    replicas = var.server-replicas
+    replicas = var.server_replicas
     selector {
       match_labels = {
         kind = "httpserver"
@@ -40,11 +40,11 @@ resource "kubernetes_deployment" "athens-server" {
           }
           env {
             name  = "ATHENS_MONGO_STORAGE_URL"
-            value = var.mongo-conn-string
+            value = var.mongo_conn_string
           }
           env {
             name  = "ATHENS_GO_GET_WORKERS"
-            value = var.athens-go-get-workers
+            value = var.athens_go_get_workers
           }
           env {
             name  = "GO_ENV"
@@ -60,7 +60,7 @@ resource "kubernetes_deployment" "athens-server" {
           }
         }
         container {
-          image             = var.census-forwarder-image
+          image             = var.census_forwarder_image
           name              = "census-forwarder"
           image_pull_policy = "IfNotPresent"
           port {
@@ -71,7 +71,7 @@ resource "kubernetes_deployment" "athens-server" {
           }
           env {
             name  = "APPINSIGHTS_INSTRUMENTATIONKEY"
-            value = var.census-forwarder-app-key
+            value = var.census_forwarder_app_key
           }
         }
       }

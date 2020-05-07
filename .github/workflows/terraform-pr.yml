@@ -1,0 +1,55 @@
+name: Terraform Deploy for PRs
+on:
+  push:
+    branches-ignore:
+      - 'master'
+
+jobs:
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.12.16
+        terraform_wrapper: false
+
+    - name: Setup Terraform RC
+      run: echo "$TERRAFORM_RC" > ./.terraformrc
+      env:
+        TERRAFORM_RC: ${{ secrets.TERRAFORM_RC }}
+    
+    - name: Format
+      run: terraform fmt tf
+    
+    - name: Init
+      run: terraform init tf
+      env:
+        ARM_RESOURCE_GROUP_NAME: ${{ secrets.STAGING_ARM_RESOURCE_GROUP_NAME }}
+        ARM_STORAGE_ACCOUNT_NAME: ${{secrets.ARM_STORAGE_ACCOUNT_NAME }}
+        ARM_CONTAINER_NAME: ${{ secrets.ARM_CONTAINER_NAME }}
+        ARM_ACCESS_KEY: ${{ secrets.STAGING_ARM_ACCESS_KEY }}
+
+
+
+    - name: Deploy to staging
+      run: terraform apply tf
+      env:
+        TF_IN_AUTOMATION: true
+        TF_kube_host: ${{ secrets.STAGING_KUBE_HOST }}
+        TF_kube_cluster_ca: ${{ secrets.STAGING_KUBE_CLUSTER_CA}}
+        TF_kube_client_cert: ${{ secrets.STAGING_KUBE_CLIENT_CERT }}
+        TF_kube_client_key: ${{ secrets.STAGING_KUBE_CLIENT_KEY }}
+        TF_namespace: ${GITHUB_REF}
+        TF_server_replicas: 1
+        TF_mongo_conn_string: ${{ secrets.STAGING_MONGO_CONN_STRING }}
+        TF_athens_go_get_workers: 3
+        TF_census_forwarder_image: TODO
+        TF_census_forwarder_app_key: ${{ secrets.STAGING_CENSUS_FORWARDER_APP_KEY }}
+        TF_crathens_image_name: TODO
+
